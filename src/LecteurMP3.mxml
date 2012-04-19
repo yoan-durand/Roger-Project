@@ -3,13 +3,16 @@
 					   xmlns:s="library://ns.adobe.com/flex/spark"
 					   xmlns:mx="library://ns.adobe.com/flex/mx"
 					   width="1200" height="764" backgroundColor="#FFFFFF"
-					   preloaderChromeColor="#FFFFFF">
+					   preloaderChromeColor="#FFFFF"
+					   title="AirMusic">
 	<s:layout>
 		<s:BasicLayout/>
 	</s:layout>
 	
 	<fx:Script>
 		<![CDATA[
+			import mx.events.FlexNativeWindowBoundsEvent;
+			import mx.events.MenuEvent;
 			protected function Play_clickHandler(event:MouseEvent):void
 			{
 				// TODO Auto-generated method stub
@@ -17,6 +20,12 @@
 			}
 			
 			protected function Stop_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				
+			}
+			
+			protected function myMenuBar_changeHandler(event:MenuEvent):void
 			{
 				// TODO Auto-generated method stub
 				
@@ -33,7 +42,7 @@
 			<mx:MenuBar id="myMenuBar" labelField="@label">
 				<fx:XMLList>
 					<menuitem label="Fichier">
-						<menuitem label="Ajouter un dossier"/>
+						<menuitem label="Ajouter un dossier" type="button"/>
 						<menuitem label="Ouvrir un fichier"/>
 						<menuitem label = "Creer une playlist"/>
 						<menuitem label ="Importer une playlist"/>
