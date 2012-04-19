@@ -42,8 +42,8 @@
 			<mx:MenuBar id="myMenuBar" labelField="@label">
 				<fx:XMLList>
 					<menuitem label="Fichier">
-						<menuitem label="Ajouter un dossier" type="button"/>
-						<menuitem label="Ouvrir un fichier"/>
+						<menuitem label="Ajouter un dossier" click="AddFolder_clickHandler(event)"/>
+						<menuitem label="Ouvrir un fichier" click="OpenFile_clickHandler(event)"/>
 						<menuitem label = "Creer une playlist"/>
 						<menuitem label ="Importer une playlist"/>
 					</menuitem>
