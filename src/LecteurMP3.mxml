@@ -30,6 +30,16 @@
 				// TODO Auto-generated method stub
 				
 			}
+		
+			protected function menuBar_clickHandler(event:MenuEvent):void
+			{
+				//trace ("event name" + event.item.@name);
+				if (event.item.@name == "add")
+				{
+					var file_search:Filesearch = new Filesearch ();
+				}
+				
+			}
 			
 		]]>
 	</fx:Script>
@@ -39,11 +49,11 @@
 	</fx:Declarations>
 	<s:VGroup x="12" y="4" width="1179" height="747" verticalAlign="top">
 		<s:HGroup id="MenuGroup" width="1171" height="28">
-			<mx:MenuBar id="myMenuBar" labelField="@label">
+			<mx:MenuBar id="myMenuBar" labelField="@label" itemClick="menuBar_clickHandler(event)">
 				<fx:XMLList>
 					<menuitem label="Fichier">
-						<menuitem label="Ajouter un dossier" click="AddFolder_clickHandler(event)"/>
-						<menuitem label="Ouvrir un fichier" click="OpenFile_clickHandler(event)"/>
+						<menuitem label="Ajouter un dossier" name="add"/>
+						<menuitem label="Ouvrir un fichier" name="open"/>
 						<menuitem label = "Creer une playlist"/>
 						<menuitem label ="Importer une playlist"/>
 					</menuitem>
