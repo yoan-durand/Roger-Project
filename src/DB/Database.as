@@ -1,10 +1,12 @@
 package DB
 {
-	import flash.filesystem.File;
+	import BO.Music;
+	
 	import flash.data.SQLConnection;
-	import flash.data.SQLStatement;
 	import flash.data.SQLMode;
 	import flash.data.SQLResult;
+	import flash.data.SQLStatement;
+	import flash.filesystem.File;
 	
 	public class Database extends Logger
 	{
@@ -32,20 +34,31 @@ package DB
 			return instance;
 		}
 		
-		private function executeQuery(pMode:SQLMode, pQuery:String):SQLResult
+		private function executeQuery(pMode:String, pQuery:String, pParameters:Object = null, pClass:Class=null):SQLResult
 		{
 			try
 			{
 				var Connection:SQLConnection = new SQLConnection();
 				var Statement:SQLStatement = new SQLStatement();
-				
 				Connection.open(databaseFile, pMode);
 				
 				Statement.sqlConnection = Connection;
 				
 				Statement.text = pQuery;
-				Statement.execute();
 				
+				if(pParameters != null)
+				{
+					for(var id:String in pParameters)
+					{
+						Statement.parameters[id] = pParameters[id];
+					}
+				}
+				if(pClass != null)
+				{
+					Statement.itemClass = pClass;
+				}
+				
+				Statement.execute();
 				return Statement.getResult();
 			}
 			catch(error:SQLError)
@@ -55,6 +68,33 @@ package DB
 			finally
 			{
 				Connection.close();
+			}
+			return null;
+		}
+		
+		public function insertMusic(pMusic:BO.Music):Boolean
+		{
+			var sQuery:String = "INSERT INTO Music (Path, ID_Echonest, Album, Artist, Length, Title, Genre) VALUES (@Path, @ID_Echonest, @Album, @Artist, @Length, @Title, @Genre)";
+			var params:Object = {"@Path" : pMusic.Path, "@ID_Echonest" : pMusic.ID_Echonest, "@Album" : pMusic.Album, "@Artist" : pMusic.Artist, "@Length" : pMusic.Length, "@Title" : pMusic.Title, "@Genre" : pMusic.Genre};
+			
+			var result:SQLResult = this.executeQuery(SQLMode.UPDATE, sQuery, params);
+			
+			if(result != null)
+			{
+				pMusic.ID_Music = result.lastInsertRowID;
+				return true;
+			}
+			
+			return false;
+		}
+		
+		public function getMusicList():Array
+		{
+			var result:SQLResult = this.executeQuery(SQLMode.READ, "SELECT * FROM Music", null, BO.Music);
+			
+			if(result != null)
+			{
+				return result.data == null ? new Array() : result.data;
 			}
 			return null;
 		}
