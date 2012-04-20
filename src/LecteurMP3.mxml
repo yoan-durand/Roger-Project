@@ -2,9 +2,10 @@
 <s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009"
 					   xmlns:s="library://ns.adobe.com/flex/spark"
 					   xmlns:mx="library://ns.adobe.com/flex/mx"
-					   width="1200" height="764" backgroundColor="#FFFFFF"
+					   width="800" height="600" backgroundColor="#FFFFFF"
 					   preloaderChromeColor="#FFFFF"
-					   title="AirMusic">
+					   title="AirMusic"
+					   initialize="test_data();initGenre();firtArtist();Albuminit()">
 	<s:layout>
 		<s:BasicLayout/>
 	</s:layout>
@@ -12,10 +13,30 @@
 	<fx:Script>
 		<![CDATA[
 			import mx.controls.Menu;
+			import mx.core.UIComponent;
 			import mx.events.FlexNativeWindowBoundsEvent;
 			import mx.events.MenuEvent;
-			import mx.core.UIComponent
+			import mx.states.AddChild;
 				
+			private var DGArray:Array = [
+				{TitleField:'Master Exploder', ArtistField:'Tenacious D', AlbumField:'The pick of destiny', GenreField:'Rock', LengthField:'3:52'},
+				{TitleField:'BeelzeBoss', ArtistField:'Tenacious D', AlbumField:'The pick of destiny', GenreField:'Rock', LengthField:'3:52'}];
+			private var gen:Array = [{GenreBase:'Metal'},{GenreBase:'Rock'}];
+			private var artist:Array = [{ArtistBase:'Tenacious D'},{ArtistBase:'Sum 41'}];
+			private var album:Array = [{AlbumBase:'The Pick of Destiny'},{AlbumBase:'Chuck'}];
+			
+			[Bindable]
+			public var init:ArrayList;
+			
+			[Bindable]
+			public var initGen:ArrayList;
+			
+			[Bindable]
+			public var initAlbum:ArrayList;
+			
+			[Bindable]
+			public var initArtist:ArrayList;
+			
 			protected function Play_clickHandler(event:MouseEvent):void
 			{				
 				
@@ -42,9 +63,67 @@
 					var file_search:Filesearch = new Filesearch ();
 				}
 				
+				if (event.item.@genre == "genre")
+				{
+					//test_data();
+				}
+				
+				
+			}
+			
+			public function initGenre()
+			{
+				initGen = new ArrayList(gen);
+			}
+			public function test_data ()
+			{
+				init = new ArrayList (DGArray);
+			}
+			public function firtArtist()
+			{
+				initArtist = new ArrayList(artist);
+			}
+			public function Albuminit()
+			{
+				initAlbum = new ArrayList(album);
 			}
 			
 			
+			protected function SpeekerLevel_changeHandler(event:Event):void
+			{
+				// TODO Auto-generated method stub
+				
+			}
+			
+			protected function Rewind_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				
+			}
+			
+			protected function forwind_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				
+			}
+			
+			protected function ShuffleButton_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				
+			}
+			
+			protected function RepeatButton_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				
+			}
+			
+			protected function PlayProgress_changeHandler(event:Event):void
+			{
+				// TODO Auto-generated method stub
+				
+			}
 			
 		]]>
 	</fx:Script>
@@ -61,6 +140,10 @@
 						<menuitem label="Ouvrir un fichier" name="open"/>
 						<menuitem label = "Creer une playlist"/>
 						<menuitem label ="Importer une playlist"/>
+					</menuitem>
+					<menuitem label="test">
+				    	<menuitem label="Add genre" name="genre"/>
+						<menuitem label="Add Music" name="music"/>
 					</menuitem>
 				</fx:XMLList>
 			</mx:MenuBar>
@@ -83,48 +166,32 @@
 			<s:Scroller width="70%" height="100%">
 				<s:VGroup id="MusicGroup" width="100%" height="100%">
 					<s:HGroup id="EasySearch" width="100%" height="35%">
-						<s:DataGrid id="GenreTable" width="33%" height="100%" requestedRowCount="4">
+						<s:DataGrid id="GenreTable" width="33%" height="100%" requestedRowCount="4" dataProvider="{initGen}">
 							<s:columns>
 								<s:ArrayList>
 									<s:GridColumn dataField="GenreBase" headerText="Genre"></s:GridColumn>
 								</s:ArrayList>
 							</s:columns>
-							<s:ArrayList>
-								<fx:Object GenreBase="Trash Technique" ></fx:Object>
-								<fx:Object GenreBase="Trash" ></fx:Object>
-								<fx:Object GenreBase="Metal Industrielle" ></fx:Object>
-						    </s:ArrayList>
 							
 						</s:DataGrid>
-						<s:DataGrid id="ArtistTable" width="33%" height="100%" requestedRowCount="4">
+						<s:DataGrid id="ArtistTable" width="33%" height="100%" requestedRowCount="4" dataProvider="{initArtist}">
 							<s:columns>
 								<s:ArrayList>
 									<s:GridColumn dataField="ArtistBase" headerText="Artiste"></s:GridColumn>
 							    </s:ArrayList>
 							</s:columns>
-							<s:ArrayList>
-								<fx:Object ArtistBase="MachineHead" ></fx:Object>
-								<fx:Object ArtistBase="Metallica" ></fx:Object>
-								<fx:Object ArtistBase="Rammstein" ></fx:Object>
-							</s:ArrayList>
 						</s:DataGrid>
-						<s:DataGrid id="AlbumTable" width="31.5%" height="100%" borderVisible="true"
+						<s:DataGrid id="AlbumTable" width="31%" height="100%" borderVisible="true"
 									chromeColor="#DFDFDF" editable="true" requestedRowCount="4"
-									selectionColor="#2E64AE">
+									selectionColor="#2E64AE" dataProvider="{initAlbum}">
 							<s:columns>
 								<s:ArrayList>
 									<s:GridColumn dataField="AlbumBase" headerText="Album"></s:GridColumn>
 								</s:ArrayList>
 							</s:columns>
-							<s:ArrayList>
-								<fx:Object AlbumBase="The Blackennig" ></fx:Object>
-								<fx:Object AlbumBase="Black Album" ></fx:Object>
-								<fx:Object AlbumBase="Mutter" ></fx:Object>
-								
-							</s:ArrayList>
 						</s:DataGrid>
 					</s:HGroup>
-					<s:DataGrid id="MusicTable" width="99%" height="65%" requestedRowCount="4">
+					<s:DataGrid id="MusicTable" width="99%" height="65%" dataProvider="{init}">
 						<s:columns>
 							<s:ArrayList>
 								<s:GridColumn dataField="TitleField" headerText="Titre"></s:GridColumn>
@@ -134,11 +201,6 @@
 								<s:GridColumn dataField="LengthField" headerText="Durée"></s:GridColumn>
 							</s:ArrayList>
 						</s:columns>
-						
-						<s:ArrayList>
-							<fx:Object TitleField="Slanderous" ArtistField="Machine Head" AlbumField="The Blackenning" GenreField="Trash Technique" LengthField="3:52"></fx:Object>
-							
-						</s:ArrayList>
 					</s:DataGrid>
 				</s:VGroup>
 			</s:Scroller>
@@ -149,17 +211,22 @@
 				<s:HScrollBar width="100%"/>
 			</s:VGroup>
 			<s:HGroup id="PlayElement" width="100%" height="11%" verticalAlign="middle">
-				<s:Button id="Rewind" y="20" width="25%" height="100%" label="Rewind"/>
+				<s:Button id="Rewind" y="20" width="25%" height="100%" label="Rewind"
+						  click="Rewind_clickHandler(event)"/>
 				<s:Button id="Play" y="20" width="25%" height="100%" label="Play"
 						  click="Play_clickHandler(event)"/>
 				<s:Button id="Stop" y="21" width="25%" height="100%" label="Stop"
 						  click="Stop_clickHandler(event)"/>
-				<s:Button id="forwind" y="19" width="25%" height="100%" label="Forwind"/>
+				<s:Button id="forwind" y="19" width="25%" height="100%" label="Forwind"
+						  click="forwind_clickHandler(event)"/>
 				<s:Image id="SpeekerImage" width="10%" height="100%"/>
-				<s:HSlider id="SpeekerLevel" width="45%"/>
-				<mx:ProgressBar y="26" width="100%" height="12" label=" "/>
-				<s:ToggleButton id="ShuffleButton" width="25%" height="100%" label="Shuffle"/>
-				<s:ToggleButton id="RepeatButton" width="25%" height="100%" label="Repeat"/>
+				<s:HSlider id="SpeekerLevel" width="71" change="SpeekerLevel_changeHandler(event)"/>
+				<s:HSlider id="PlayProgress" width="60%" change="PlayProgress_changeHandler(event)"
+						   skinClass="spark.skins.spark.HSliderSkin"/>
+				<s:ToggleButton id="ShuffleButton" width="15%" height="100%" label="Shuffle"
+								click="ShuffleButton_clickHandler(event)"/>
+				<s:ToggleButton id="RepeatButton" width="15%" height="100%" label="Repeat"
+								click="RepeatButton_clickHandler(event)"/>
 			</s:HGroup>
 		</s:VGroup>
 	</s:VGroup>
