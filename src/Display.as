@@ -60,6 +60,28 @@ package
 			_genreTab = value;
 		}
 
+		public function search(array:Array, elt:String) : Boolean
+		{
+			for (var i:int = 0; i < array.length; i++)
+			{
+				if (array[i].ArtistBase === elt)
+				{
+					return true;
+				}
+				
+				if (array[i].AlbumBase === elt)
+				{
+					return true;
+				}
+				
+				if (array[i].GenreBase === elt)
+				{
+					return true;
+				}
+				
+			}
+			return false;
+		}
 		
 		public function fill_tab() : void
 		{
@@ -71,13 +93,20 @@ package
 				{
 					musicTab.push ({TitleField:t.Title, ArtistField:t.Artist, AlbumField:t.Album, GenreField:t.Genre, LengthField:t.lenght});
 					
-					if (artistTab.indexOf(t.Artist) == -1)
+					if (search(artistTab, t.Artist) == false)
+					{
 						artistTab.push({ArtistBase:t.Artist});
-					if (genreTab.indexOf(t.Genre) == -1)
+					}
+					if (search(genreTab, t.Genre) == false)
+					{
 						genreTab.push({GenreBase:t.Genre});
-					if (albumTab.indexOf(t.Album) == -1)
+					}
+					if (search(albumTab, t.Album) == false)
+					{
 						albumTab.push({AlbumBase:t.Album});
+					}
 				}
+					
 			}
 		
 		}
