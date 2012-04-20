@@ -11,7 +11,7 @@ package
 
 	public class Player
 	{
-		private var _music_list:Array;
+		private var _music_list:Array; // liste de Music, correspond a la liste de lecture
 		private var _music_sound:Sound;
 		public  var _index:int;
 		private var _channel:SoundChannel;

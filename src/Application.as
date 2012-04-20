@@ -4,7 +4,7 @@ package
 	{
 		private static var constructorKey:Object = {};
 		private static var instance:Application = null;
-		public var player:Player;
+		public var _player:Player;
 		
 		public function Application(pConstructorKey:Object)
 		{
@@ -12,8 +12,8 @@ package
 			{
 				throw new Error("Instanciation illégale (constructeur privé)");
 			}
-			
-			player = new Player;				
+			_player = new Player;
+			init_database ();
 		}
 		
 		public static function get Instance():Application
@@ -23,6 +23,12 @@ package
 				instance = new Application(constructorKey);
 			}
 			return instance;
+		}
+		
+		
+		private function init_database ()
+		{
+			//TODO
 		}
 	}
 }
