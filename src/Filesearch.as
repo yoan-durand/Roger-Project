@@ -105,12 +105,12 @@ package
 				var length:int = snd.length ;
 				
 				var music:Music = new Music();
-				music.Title = title;
-				music.Album = album;
-				music.Artist = artist;
-				music.Genre = genre;
+				music.Title = Tool.str_replace("'", "\'", title);
+				music.Album = Tool.str_replace("'", "\'", album);
+				music.Artist = Tool.str_replace("'", "\'", artist);
+				music.Genre = Tool.str_replace("'", "\'", genre);
 				music.Length = length;
-				music.Path = snd.url;
+				music.Path = Tool.str_replace("'", "\'", snd.url);
 				trace(music.Path);
 				snd.close();
 				
