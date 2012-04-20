@@ -22,6 +22,16 @@ package
 			_music_list = new Array ();
 		}
 		
+		public function get music_list():Array
+		{
+			return _music_list;
+		}
+
+		public function set music_list(value:Array):void
+		{
+			_music_list = value;
+		}
+
 		private function load_sound():void
 		{
 			if (_music_list.length != 0)
