@@ -114,7 +114,9 @@ package
 				snd.close();
 				
 				var insert_music:String = "INSERT INTO Music (Path, Album, Artist, Length, Title, Genre) VALUES ('"+music.Path+"', '"+music.Album+"', '"+music.Artist+"', '"+music.Length+"', '"+music.Title+"', '"+music.Genre+"')";
-				Database.exec_query(null, insert_music);
+				var query_result:SQLResult = Database.exec_query(null, insert_music);
+				music.ID_Music = query_result.lastInsertRowID;
+				Application.Instance.list_music.push(music);
 			}
 		}
 	}

@@ -10,12 +10,13 @@ package DB
 	import flash.events.SQLErrorEvent;
 	import flash.events.SQLEvent;
 	import flash.filesystem.File;
+	import flash.text.ReturnKeyLabel;
 	
 	public class Database
 	{
 		public static var dbPath:File = File.applicationDirectory.resolvePath("airmusic.db");
 		
-		public static function exec_query(dbtbstmt:String, dbinsert:String):void
+		public static function exec_query(dbtbstmt:String, dbinsert:String):SQLResult
 		{
 			var sqlconn:SQLConnection = new SQLConnection;
 			var tbcreate:SQLStatement = new SQLStatement;
@@ -54,6 +55,7 @@ package DB
 			}
 			
 			sqlconn.close();
+			return dbinsert != null ? insertst.getResult() : null;
 		}
 		
 		public static function list_query(query:String):Array
@@ -72,7 +74,7 @@ package DB
 			
 			sqlconn.close();
 			
-			return res;
+			return res != null ? res : new Array;
 		}
 		
 		private static function dbCreated(event:SQLEvent):void
