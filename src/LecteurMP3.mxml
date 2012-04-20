@@ -11,11 +11,14 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import mx.controls.Menu;
 			import mx.events.FlexNativeWindowBoundsEvent;
 			import mx.events.MenuEvent;
+			import mx.core.UIComponent
+				
 			protected function Play_clickHandler(event:MouseEvent):void
-			{
-				// TODO Auto-generated method stub
+			{				
+				
 				
 			}
 			
@@ -31,6 +34,22 @@
 				
 			}
 			
+			protected function testhandler(menu:Menu) : void
+			{
+				
+				
+				// Add an event listener for the itemClick event.
+				menu.addEventListener(MenuEvent.ITEM_CLICK, 
+					itemClickInfo);
+				// Show the menu.
+			}
+			
+			protected function itemClickInfo (event:MenuEvent) : void
+			{
+				var objname:Label = new Label;
+				objname.text = "Fucking Test";
+				
+			}
 		]]>
 	</fx:Script>
 	
@@ -39,11 +58,11 @@
 	</fx:Declarations>
 	<s:VGroup x="12" y="4" width="1179" height="747" verticalAlign="top">
 		<s:HGroup id="MenuGroup" width="1171" height="28">
-			<mx:MenuBar id="myMenuBar" labelField="@label">
+			<mx:MenuBar id="myMenuBar" labelField="@label" itemClick="itemClickInfo(event)">
 				<fx:XMLList>
 					<menuitem label="Fichier">
-						<menuitem label="Ajouter un dossier" click="AddFolder_clickHandler(event)"/>
-						<menuitem label="Ouvrir un fichier" click="OpenFile_clickHandler(event)"/>
+						<menuitem label="Ajouter un dossier" item/>
+						<menuitem label="Ouvrir un fichier"/>
 						<menuitem label = "Creer une playlist"/>
 						<menuitem label ="Importer une playlist"/>
 					</menuitem>
