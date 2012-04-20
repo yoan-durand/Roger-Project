@@ -63,27 +63,35 @@
 					var file_search:Filesearch = new Filesearch ();
 				}
 				
-				if (event.item.@genre == "genre")
+				if (event.item.@name == "genre")
 				{
-					//test_data();
+					test();
 				}
 				
 				
 			}
 			
-			public function initGenre()
+			public function test () : void
+			{
+				var change:Array = [{AlbumBase:'The blackening'}, {AlbumBase:'The black album'}, {AlbumBase:'The number beast'}];
+			    
+				initAlbum.removeAll();
+				var array:ArrayList = new ArrayList (change);
+				initAlbum = array;
+			}
+			public function initGenre() : void
 			{
 				initGen = new ArrayList(gen);
 			}
-			public function test_data ()
+			public function test_data () : void
 			{
 				init = new ArrayList (DGArray);
 			}
-			public function firtArtist()
+			public function firtArtist() : void
 			{
 				initArtist = new ArrayList(artist);
 			}
-			public function Albuminit()
+			public function Albuminit() : void
 			{
 				initAlbum = new ArrayList(album);
 			}
