@@ -1,5 +1,9 @@
 package
 {
+	import BO.Music;
+	
+	import DB.Database;
+	
 	import flash.events.ErrorEvent;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
@@ -10,7 +14,6 @@ package
 	import flash.media.SoundLoaderContext;
 	import flash.net.FileReference;
 	import flash.net.URLRequest;
-	import BO.Music;
 	
 	import mx.events.FileEvent;
 	
@@ -109,8 +112,8 @@ package
 				music.Path = snd.url;
 				snd.close();
 				
-				//TODO : Add music to BDD
-				
+				Database.Instance.createDatabase();
+				Database.Instance.insertMusic(music);
 			}
 		}
 	}

@@ -61,9 +61,9 @@ package DB
 				Statement.execute();
 				return Statement.getResult();
 			}
-			catch(error:SQLError)
+			catch(error:String)
 			{
-				this.logError("Requête : <" + pQuery + ">\n" + error.toString());
+				this.logError("Requête : <" + pQuery + ">\n" + error);
 			}
 			finally
 			{
