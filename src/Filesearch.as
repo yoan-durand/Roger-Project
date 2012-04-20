@@ -97,23 +97,17 @@ package
 			// ID3 events
 			function id3Handler(event:Event):void {
 				var id3:ID3Info = event.target.id3;
-				var artist:String = id3.artist;
-				var title:String = id3.songName;
-				var album:String = id3.album;
-				var genre:String = id3.genre;
-				var snd:Sound = event.target as Sound;
-				var length:int = snd.length ;
-				
 				var music:Music = new Music();
-				music.Title = title != null ? Tool.str_replace("'", "''", title) : "";
-				music.Album = album != null ? Tool.str_replace("'", "''", album) : "";
-				music.Artist = artist != null ? Tool.str_replace("'", "''", artist) : "";
-				music.Genre = genre != null ? Tool.str_replace("'", "''", genre) : "";
-				music.Length = length;
-				music.Path = snd.url != null ? Tool.str_replace("'", "''", snd.url) : "";
+				music.Artist = id3.artist != null ? id3.artist : "";
+				music.Title = id3.songName != null ? id3.songName : "";
+				music.Album = id3.album != null ? id3.album : "";
+				music.Genre = id3.genre != null ? id3.genre : "";
+				var snd:Sound = event.target as Sound;
+				music.Length = snd.length ;
+				music.Path = snd.url != null ? snd.url : "";
 				snd.close();
 				
-				var insert_music:String = "INSERT INTO Music (Path, Album, Artist, Length, Title, Genre) VALUES ('"+music.Path+"', '"+music.Album+"', '"+music.Artist+"', '"+music.Length+"', '"+music.Title+"', '"+music.Genre+"')";
+				var insert_music:String = "INSERT INTO Music (Path, Album, Artist, Length, Title, Genre) VALUES ('"+Tool.str_replace("'", "''", music.Path)+"', '"+Tool.str_replace("'", "''", music.Album)+"', '"+Tool.str_replace("'", "''", music.Artist)+"', '"+music.Length+"', '"+Tool.str_replace("'", "''", music.Title)+"', '"+Tool.str_replace("'", "''", music.Genre)+"')";
 				var query_result:SQLResult = Database.exec_query(null, insert_music);
 				if (query_result != null)
 				{
