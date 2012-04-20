@@ -8,6 +8,7 @@ package
 		private static var instance:Application = null;
 		public var _player:Player;
 		private var _list_music:Array;
+		private var _display:Display;
 		
 		public function Application(pConstructorKey:Object)
 		{
@@ -17,8 +18,19 @@ package
 			}
 			_player = new Player;
 			init_database ();
+			display = new Display;
 		}
 		
+		public function get display():Display
+		{
+			return _display;
+		}
+
+		public function set display(value:Display):void
+		{
+			_display = value;
+		}
+
 		public function get list_music():Array
 		{
 			return _list_music;

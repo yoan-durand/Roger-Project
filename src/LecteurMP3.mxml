@@ -16,13 +16,6 @@
 			import mx.core.UIComponent;
 			import mx.events.FlexNativeWindowBoundsEvent;
 			import mx.events.MenuEvent;
-				
-			private var DGArray:Array = [
-				{TitleField:'Master Exploder', ArtistField:'Tenacious D', AlbumField:'The pick of destiny', GenreField:'Rock', LengthField:'3:52'},
-				{TitleField:'BeelzeBoss', ArtistField:'Tenacious D', AlbumField:'The pick of destiny', GenreField:'Rock', LengthField:'3:52'}];
-			private var gen:Array = [{GenreBase:'Metal'},{GenreBase:'Rock'}];
-			private var artist:Array = [{ArtistBase:'Tenacious D'},{ArtistBase:'Sum 41'}];
-			private var album:Array = [{AlbumBase:'The Pick of Destiny'},{AlbumBase:'Chuck'}];
 			
 			[Bindable]
 			public var init:ArrayList;
@@ -86,12 +79,15 @@
 			}
 			
 			
-			public function init_All()
+			public function init_All() : void
 			{
-				initGen = new ArrayList(gen);
-				init = new ArrayList();
-				initArtist= new ArrayList();
-				initAlbum = new ArrayList();
+				var app:Application = Application.Instance;
+				
+				app.display.fill_tab();
+				initGen = new ArrayList(app.display.genreTab);
+				init = new ArrayList(app.display.musicTab);
+				initArtist= new ArrayList(app.display.artistTab);
+				initAlbum = new ArrayList(app.display.albumTab);
 			}
 			
 			
