@@ -13,10 +13,14 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import DB.Database;
+			
 			import mx.controls.Menu;
 			import mx.core.UIComponent;
 			import mx.events.FlexNativeWindowBoundsEvent;
 			import mx.events.MenuEvent;
+			
+			import spark.events.GridSelectionEvent;
 			
 			[Bindable]
 			public var init:ArrayList;
@@ -59,7 +63,7 @@
 				//trace ("event name" + event.item.@name);
 				if (event.item.@name == "add")
 				{
-					var file_search:Filesearch = new Filesearch ();
+					var file_search:Filesearch = new Filesearch ();			
 				}
 				
 				if (event.item.@name == "genre")
@@ -83,8 +87,9 @@
 			public function init_All() : void
 			{
 				var app:Application = Application.Instance;
+				var tab:Array = DB.Database.list_query("select * from Music");
 				
-				app.display.fill_tab();
+				app.display.fill_tab(tab);
 				initGen = new ArrayList(app.display.genreTab);
 				init = new ArrayList(app.display.musicTab);
 				initArtist= new ArrayList(app.display.artistTab);
@@ -124,6 +129,12 @@
 			}
 			
 			protected function PlayProgress_changeHandler(event:Event):void
+			{
+				// TODO Auto-generated method stub
+				
+			}
+			
+			protected function MusicTable_selectionChangeHandler(event:GridSelectionEvent):void
 			{
 				// TODO Auto-generated method stub
 				
@@ -170,9 +181,10 @@
 			<s:Scroller width="70%" height="100%">
 				<s:VGroup id="MusicGroup" width="100%" height="100%">
 					<s:HGroup id="EasySearch" width="100%" height="35%">
-						<s:DataGrid id="GenreTable" width="33%" height="100%"
-									contentBackgroundColor="#D2CACA" dataProvider="{initGen}"
-									requestedRowCount="4" selectionColor="#656060">
+						<s:DataGrid id="GenreTable" width="33%" height="100%" borderVisible="true"
+									color="#FFFFFF" contentBackgroundColor="#D2CACA"
+									dataProvider="{initGen}" requestedRowCount="4"
+									selectionColor="#656060">
 							<s:columns>
 								<s:ArrayList>
 									<s:GridColumn dataField="GenreBase" headerText="Genre"></s:GridColumn>
@@ -200,19 +212,20 @@
 							</s:columns>
 						</s:DataGrid>
 					</s:HGroup>
-					<s:DataGrid id="MusicTable" width="99%" height="65%"
-								contentBackgroundColor="#D1C6C6" dataProvider="{init}"
-								selectionColor="#605B5B">
-						<s:columns>
-							<s:ArrayList>
-								<s:GridColumn dataField="TitleField" headerText="Titre"></s:GridColumn>
-								<s:GridColumn dataField="ArtistField" headerText="Artiste"></s:GridColumn>
-								<s:GridColumn dataField="AlbumField" headerText="Album"></s:GridColumn>
-								<s:GridColumn dataField="GenreField" headerText="Genre"></s:GridColumn>
-								<s:GridColumn dataField="LengthField" headerText="Durée"></s:GridColumn>
-							</s:ArrayList>
-						</s:columns>
-					</s:DataGrid>
+					<mx:DataGrid id="MusicTable" width="99%" height="65%" borderVisible="false"
+								 color="#000000" contentBackgroundColor="#D1C6C6"
+								 dataProvider="{init}" editable="false" selectionColor="#605B5B">
+						<mx:columns>
+							
+								<mx:DataGridColumn dataField="test" headerRenderer="mx.controls.CheckBox"  itemRenderer="mx.controls.CheckBox"/>
+								<mx:DataGridColumn dataField="TitleField" headerText="Titre"/>
+								<mx:DataGridColumn dataField="ArtistField" headerText="Artiste"/>
+								<mx:DataGridColumn dataField="AlbumField" headerText="Album"/>
+								<mx:DataGridColumn dataField="GenreField" headerText="Genre"/>
+								<mx:DataGridColumn dataField="LengthField" headerText="Durée"/>
+							
+						</mx:columns>
+					</mx:DataGrid>
 				</s:VGroup>
 			</s:Scroller>
 		</s:HGroup>

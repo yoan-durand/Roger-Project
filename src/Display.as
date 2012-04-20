@@ -83,10 +83,8 @@ package
 			return false;
 		}
 		
-		public function fill_tab() : void
-		{
-			var tab_m:Array = DB.Database.list_query("select * from Music");	
-		
+		public function fill_tab(tab_m:Array) : void
+		{		
 			if (tab_m != null)
 			{
 				for each (var t:* in tab_m)
