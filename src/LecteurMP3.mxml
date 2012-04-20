@@ -217,7 +217,7 @@
 								 dataProvider="{init}" editable="false" selectionColor="#605B5B">
 						<mx:columns>
 							
-								<mx:DataGridColumn dataField="test" headerRenderer="mx.controls.CheckBox"  itemRenderer="mx.controls.CheckBox"/>
+								<mx:DataGridColumn dataField="test" headerText=""  itemRenderer="mx.controls.CheckBox"/>
 								<mx:DataGridColumn dataField="TitleField" headerText="Titre"/>
 								<mx:DataGridColumn dataField="ArtistField" headerText="Artiste"/>
 								<mx:DataGridColumn dataField="AlbumField" headerText="Album"/>
