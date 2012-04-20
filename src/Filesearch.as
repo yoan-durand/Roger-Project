@@ -113,8 +113,6 @@ package
 				music.Path = snd.url;
 				snd.close();
 				
-				var dbname:String = "airmusic.db";
-				
 				var music_table:String = "CREATE TABLE IF NOT EXISTS Music (";
 				music_table += "ID_Music INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, ";
 				music_table += "Path NVARCHAR(255) UNIQUE NOT NULL, ";
@@ -128,14 +126,14 @@ package
 				
 				var insert_music:String = "INSERT INTO Music (Path, Album, Artist, Length, Title, Genre) VALUES ('"+music.Path+"', '"+music.Album+"', '"+music.Artist+"', '"+music.Length+"', '"+music.Title+"', '"+music.Genre+"')";
 				
-				Database.exec_query(dbname, music_table, insert_music);
+				Database.exec_query(music_table, insert_music);
 				
 				var playlist_table:String = "CREATE TABLE IF NOT EXISTS Playlist (";
 				playlist_table += "ID_Playlist INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, ";
 				playlist_table += "Name NVARCHAR(255) UNIQUE NOT NULL ";
 				playlist_table += ")";
 				
-				Database.exec_query(dbname, playlist_table, null);
+				Database.exec_query(playlist_table, null);
 				
 				var in_playlist_table:String = "CREATE TABLE IF NOT EXISTS In_Playlist (";
 				in_playlist_table += "ID_Music INTEGER NOT NULL, ";
@@ -145,9 +143,9 @@ package
 				in_playlist_table += "FOREIGN KEY(ID_Playlist) REFERENCES Playlist(ID_Playlist) ";
 				in_playlist_table += ")";
 				
-				Database.exec_query(dbname, in_playlist_table, null);
+				Database.exec_query(in_playlist_table, null);
 				
-				var list:SQLResult = Database.list_query(dbname, "SELECT * FROM Music");
+				var list:Array = Database.list_query("SELECT * FROM Music");
 			}
 		}
 	}

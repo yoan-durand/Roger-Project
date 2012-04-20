@@ -12,15 +12,14 @@ package DB
 	import flash.filesystem.File;
 	
 	public class Database
-	{		
-		public static function exec_query(dbName:String, dbtbstmt:String, dbinsert:String):void
+	{
+		public static var dbPath:File = File.applicationDirectory.resolvePath("airmusic.db");
+		
+		public static function exec_query(dbtbstmt:String, dbinsert:String):void
 		{
 			var sqlconn:SQLConnection = new SQLConnection;
 			var tbcreate:SQLStatement = new SQLStatement;
 			var insertst:SQLStatement = new SQLStatement;
-			
-			var folder:File = File.applicationDirectory;
-			var dbPath:File = folder.resolvePath(dbName);
 			
 			sqlconn.addEventListener(SQLEvent.OPEN, dbCreated);
 			sqlconn.addEventListener(SQLErrorEvent.ERROR, dbError);
@@ -39,24 +38,28 @@ package DB
 				tbcreate.execute();
 			}
 			
-			if (dbinsert != null)
+			try
 			{
-				insertst.sqlConnection = sqlconn;
-				insertst.text = dbinsert;
-			
-				insertst.execute();
+				if (dbinsert != null)
+				{
+					insertst.sqlConnection = sqlconn;
+					insertst.text = dbinsert;
+				
+					insertst.execute();
+				}
+			}
+			catch (error:SQLError)
+			{
+				trace("Requête : <" + insertst.text + ">\n" + error.toString());
 			}
 			
 			sqlconn.close();
 		}
 		
-		public static function list_query(dbName:String, query:String):SQLResult
+		public static function list_query(query:String):Array
 		{
 			var sqlconn:SQLConnection = new SQLConnection;
 			var query_stmt:SQLStatement = new SQLStatement;
-			
-			var folder:File = File.applicationDirectory;
-			var dbPath:File = folder.resolvePath(dbName);
 			
 			sqlconn.open(dbPath);
 			
@@ -65,7 +68,7 @@ package DB
 			
 			query_stmt.execute();
 			
-			var res:SQLResult = query_stmt.getResult();
+			var res:Array = query_stmt.getResult().data;
 			
 			sqlconn.close();
 			
