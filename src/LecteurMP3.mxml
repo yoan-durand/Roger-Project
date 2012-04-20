@@ -47,7 +47,6 @@
 			{
 				var appli:Application = Application.Instance;
 				appli.player.stop();
-				
 			}
 			
 			protected function myMenuBar_changeHandler(event:MenuEvent):void
@@ -104,7 +103,8 @@
 			
 			protected function forwind_clickHandler(event:MouseEvent):void
 			{
-				// TODO Auto-generated method stub
+				var appli:Application = Application.Instance;
+				appli.player.forward();
 				
 			}
 			

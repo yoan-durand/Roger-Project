@@ -12,9 +12,8 @@ package DB
 	import flash.filesystem.File;
 	
 	public class Database
-	{
-
-		public static function createTable(dbName:String, dbtbstmt:String, dbinsert:String):void
+	{		
+		public static function exec_query(dbName:String, dbtbstmt:String, dbinsert:String):void
 		{
 			var sqlconn:SQLConnection = new SQLConnection;
 			var tbcreate:SQLStatement = new SQLStatement;
@@ -48,18 +47,29 @@ package DB
 				insertst.execute();
 			}
 			
-			var sQuery:String = "CREATE TABLE In_Playlist (";
-			sQuery += "ID_Music INTEGER NOT NULL, ";
-			sQuery += "ID_Playlist INTEGER NOT NULL, ";
-			sQuery += "PRIMARY KEY(ID_Music, ID_Playlist), ";
-			sQuery += "FOREIGN KEY(ID_Music) REFERENCES Music(ID_Music), ";
-			sQuery += "FOREIGN KEY(ID_Playlist) REFERENCES Playlist(ID_Playlist) ";
-			sQuery += "); ";
+			sqlconn.close();
+		}
+		
+		public static function list_query(dbName:String, query:String):SQLResult
+		{
+			var sqlconn:SQLConnection = new SQLConnection;
+			var query_stmt:SQLStatement = new SQLStatement;
 			
-			sQuery += "CREATE TABLE Playlist (";
-			sQuery += "ID_Playlist INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, ";
-			sQuery += "Name NVARCHAR(255) UNIQUE NOT NULL ";
-			sQuery += "); ";
+			var folder:File = File.applicationDirectory;
+			var dbPath:File = folder.resolvePath(dbName);
+			
+			sqlconn.open(dbPath);
+			
+			query_stmt.sqlConnection = sqlconn;
+			query_stmt.text = query;
+			
+			query_stmt.execute();
+			
+			var res:SQLResult = query_stmt.getResult();
+			
+			sqlconn.close();
+			
+			return res;
 		}
 		
 		private static function dbCreated(event:SQLEvent):void
