@@ -10,6 +10,7 @@ package
 	import flash.media.SoundLoaderContext;
 	import flash.net.FileReference;
 	import flash.net.URLRequest;
+	import BO.Music;
 	
 	import mx.events.FileEvent;
 	
@@ -96,11 +97,20 @@ package
 				var title:String = id3.songName;
 				var album:String = id3.album;
 				var genre:String = id3.genre;
-				
 				var snd:Sound = event.target as Sound;
 				var length:int = snd.length ;
-				trace(artist + ' - ' + title + ' : '+ album + ' : ' + genre + ' : ' + length);
+				
+				var music:Music = new Music();
+				music.Title = title;
+				music.Album = album;
+				music.Artist = artist;
+				music.Genre = genre;
+				music.Length = length;
+				music.Path = snd.url;
 				snd.close();
+				
+				//TODO : Add music to BDD
+				
 			}
 		}
 	}
