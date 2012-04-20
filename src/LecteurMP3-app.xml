@@ -64,7 +64,7 @@
 		<!-- <minimizable></minimizable> -->
 
 		<!-- Whether the user can maximize the window. Optional. Default true. -->
-		 <maximizable>false</maximizable>
+		 <maximizable>true</maximizable>
 
 		<!-- Whether the user can resize the window. Optional. Default true. -->
 		 <resizable>false</resizable>

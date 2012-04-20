@@ -11,11 +11,14 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import mx.controls.Menu;
 			import mx.events.FlexNativeWindowBoundsEvent;
 			import mx.events.MenuEvent;
+			import mx.core.UIComponent
+				
 			protected function Play_clickHandler(event:MouseEvent):void
-			{
-				// TODO Auto-generated method stub
+			{				
+				
 				
 			}
 			
@@ -41,14 +44,16 @@
 				
 			}
 			
+			
+			
 		]]>
 	</fx:Script>
 	
 	<fx:Declarations>
 		<!-- Placer ici les éléments non visuels (services et objets de valeur, par exemple). -->
 	</fx:Declarations>
-	<s:VGroup x="12" y="4" width="1179" height="747" verticalAlign="top">
-		<s:HGroup id="MenuGroup" width="1171" height="28">
+	<s:VGroup width="100%" height="100%" verticalAlign="top">
+		<s:HGroup id="MenuGroup" width="100%" height="3%">
 			<mx:MenuBar id="myMenuBar" labelField="@label" itemClick="menuBar_clickHandler(event)">
 				<fx:XMLList>
 					<menuitem label="Fichier">
@@ -60,9 +65,9 @@
 				</fx:XMLList>
 			</mx:MenuBar>
 		</s:HGroup>
-		<s:HGroup width="1170" height="568">
-			<s:VGroup width="333" height="578">
-				<mx:Accordion width="328" height="264">
+		<s:HGroup width="100%" height="85%">
+			<s:VGroup id="InfoPlaylistGroup" width="30%" height="100%">
+				<mx:Accordion width="100%" height="50%">
 					<s:NavigatorContent width="100%" height="100%" label="Playlist1">
 					</s:NavigatorContent>
 					<s:NavigatorContent width="100%" height="100%" label="playlist2">
@@ -70,32 +75,91 @@
 					<s:NavigatorContent width="100%" height="100%" label="playlist3">
 					</s:NavigatorContent>
 				</mx:Accordion>
-				<s:SWFLoader id="Econest_Image" width="327" height="240"/>
+				<s:SWFLoader id="Econest_Image" width="100%" height="40%"/>
 				<s:Label id="Name" fontFamily="Times New Roman" fontSize="22" text="Name"/>
 				<s:Label id="ArtisteDisplay" text="Artiste"/>
 				<s:Label id="AlbumInfo" text="Album"/>
 			</s:VGroup>
-			<s:Scroller width="833" height="561">
-				<s:VGroup id="ScrollerMusic" width="100%" height="100%">
-					<s:List id="ListMusic" width="817" height="563"></s:List>
+			<s:Scroller width="70%" height="100%">
+				<s:VGroup id="MusicGroup" width="100%" height="100%">
+					<s:HGroup id="EasySearch" width="100%" height="35%">
+						<s:DataGrid id="GenreTable" width="33%" height="100%" requestedRowCount="4">
+							<s:columns>
+								<s:ArrayList>
+									<s:GridColumn dataField="GenreBase" headerText="Genre"></s:GridColumn>
+								</s:ArrayList>
+							</s:columns>
+							<s:ArrayList>
+								<fx:Object GenreBase="Trash Technique" ></fx:Object>
+								<fx:Object GenreBase="Trash" ></fx:Object>
+								<fx:Object GenreBase="Metal Industrielle" ></fx:Object>
+						    </s:ArrayList>
+							
+						</s:DataGrid>
+						<s:DataGrid id="ArtistTable" width="33%" height="100%" requestedRowCount="4">
+							<s:columns>
+								<s:ArrayList>
+									<s:GridColumn dataField="ArtistBase" headerText="Artiste"></s:GridColumn>
+							    </s:ArrayList>
+							</s:columns>
+							<s:ArrayList>
+								<fx:Object ArtistBase="MachineHead" ></fx:Object>
+								<fx:Object ArtistBase="Metallica" ></fx:Object>
+								<fx:Object ArtistBase="Rammstein" ></fx:Object>
+							</s:ArrayList>
+						</s:DataGrid>
+						<s:DataGrid id="AlbumTable" width="31.5%" height="100%" borderVisible="true"
+									chromeColor="#DFDFDF" editable="true" requestedRowCount="4"
+									selectionColor="#2E64AE">
+							<s:columns>
+								<s:ArrayList>
+									<s:GridColumn dataField="AlbumBase" headerText="Album"></s:GridColumn>
+								</s:ArrayList>
+							</s:columns>
+							<s:ArrayList>
+								<fx:Object AlbumBase="The Blackennig" ></fx:Object>
+								<fx:Object AlbumBase="Black Album" ></fx:Object>
+								<fx:Object AlbumBase="Mutter" ></fx:Object>
+								
+							</s:ArrayList>
+						</s:DataGrid>
+					</s:HGroup>
+					<s:DataGrid id="MusicTable" width="99%" height="65%" requestedRowCount="4">
+						<s:columns>
+							<s:ArrayList>
+								<s:GridColumn dataField="TitleField" headerText="Titre"></s:GridColumn>
+								<s:GridColumn dataField="ArtistField" headerText="Artiste"></s:GridColumn>
+								<s:GridColumn dataField="AlbumField" headerText="Album"></s:GridColumn>
+								<s:GridColumn dataField="GenreField" headerText="Genre"></s:GridColumn>
+								<s:GridColumn dataField="LengthField" headerText="Durée"></s:GridColumn>
+							</s:ArrayList>
+						</s:columns>
+						
+						<s:ArrayList>
+							<fx:Object TitleField="Slanderous" ArtistField="Machine Head" AlbumField="The Blackenning" GenreField="Trash Technique" LengthField="3:52"></fx:Object>
+							
+						</s:ArrayList>
+					</s:DataGrid>
 				</s:VGroup>
 			</s:Scroller>
 		</s:HGroup>
-		<s:VGroup width="1174" height="142">
-			<s:VGroup id="ListeLecture" width="1175" height="70" verticalAlign="top">
-				<s:SWFLoader width="56" height="48"/>
-				<s:HScrollBar width="1174"/>
+		<s:VGroup width="100%" height="20%">
+			<s:VGroup id="ListeLecture" width="100%" height="70%" verticalAlign="top">
+				<s:SWFLoader width="10%" height="80%"/>
+				<s:HScrollBar width="100%"/>
 			</s:VGroup>
-			<s:HGroup id="PlayElement" width="1174" height="63" verticalAlign="middle">
-				<s:Button id="Rewind" y="20" height="33" label="Rewind"/>
-				<s:Button id="Play" y="20" height="33" label="Play" click="Play_clickHandler(event)"/>
-				<s:Button id="Stop" y="21" height="33" label="Stop" click="Stop_clickHandler(event)"/>
-				<s:Button id="forwind" y="19" height="33" label="Forwind"/>
-				<s:Image id="SpeekerImage"/>
-				<s:HSlider id="SpeekerLevel" width="115"/>
-				<mx:ProgressBar y="26" width="541" height="12" label=" "/>
-				<s:ToggleButton id="ShuffleButton" width="59" label="Shuffle"/>
-				<s:ToggleButton id="RepeatButton" width="76" label="Repeat"/>
+			<s:HGroup id="PlayElement" width="100%" height="11%" verticalAlign="middle">
+				<s:Button id="Rewind" y="20" width="25%" height="100%" label="Rewind"/>
+				<s:Button id="Play" y="20" width="25%" height="100%" label="Play"
+						  click="Play_clickHandler(event)"/>
+				<s:Button id="Stop" y="21" width="25%" height="100%" label="Stop"
+						  click="Stop_clickHandler(event)"/>
+				<s:Button id="forwind" y="19" width="25%" height="100%" label="Forwind"/>
+				<s:Image id="SpeekerImage" width="10%" height="100%"/>
+				<s:HSlider id="SpeekerLevel" width="45%"/>
+				<mx:ProgressBar y="26" width="100%" height="12" label=" "/>
+				<s:ToggleButton id="ShuffleButton" width="25%" height="100%" label="Shuffle"/>
+				<s:ToggleButton id="RepeatButton" width="25%" height="100%" label="Repeat"/>
 			</s:HGroup>
 		</s:VGroup>
 	</s:VGroup>
