@@ -105,13 +105,12 @@ package
 				var length:int = snd.length ;
 				
 				var music:Music = new Music();
-				music.Title = title != null ? Tool.str_replace("'", "\'", title) : "";
-				music.Album = album != null ? Tool.str_replace("'", "\'", album) : "";
-				music.Artist = artist != null ? Tool.str_replace("'", "\'", artist) : "";
-				music.Genre = genre != null ? Tool.str_replace("'", "\'", genre) : "";
+				music.Title = title != null ? Tool.str_replace("'", "''", title) : "";
+				music.Album = album != null ? Tool.str_replace("'", "''", album) : "";
+				music.Artist = artist != null ? Tool.str_replace("'", "''", artist) : "";
+				music.Genre = genre != null ? Tool.str_replace("'", "''", genre) : "";
 				music.Length = length;
-				music.Path = snd.url != null ? Tool.str_replace("'", "\'", snd.url) : "";
-				trace(music.Path);
+				music.Path = snd.url != null ? Tool.str_replace("'", "''", snd.url) : "";
 				snd.close();
 				
 				var insert_music:String = "INSERT INTO Music (Path, Album, Artist, Length, Title, Genre) VALUES ('"+music.Path+"', '"+music.Album+"', '"+music.Artist+"', '"+music.Length+"', '"+music.Title+"', '"+music.Genre+"')";
