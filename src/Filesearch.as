@@ -113,9 +113,22 @@ package
 				trace(music.Path);
 				snd.close();
 				
-				var base:DB.Database = DB.Database.Instance;
-				Database.Instance.createDatabase();
-				base.insertMusic(music);
+				var dbname:String = "airmusic.db";
+				
+				var music_table:String = "CREATE TABLE IF NOT EXISTS  Music (";
+				music_table += "ID_Music INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, ";
+				music_table += "Path NVARCHAR(255) UNIQUE NOT NULL, ";
+				music_table += "ID_Echonest INTEGER UNIQUE NULL, ";
+				music_table += "Album NVARCHAR(255) NULL, ";
+				music_table += "Artist NVARCHAR(255) NULL, ";
+				music_table += "Length INTEGER NULL, ";
+				music_table += "Title NVARCHAR(255) NOT NULL, ";
+				music_table += "Genre NVARCHAR(255) NULL ";
+				music_table += ")";
+				
+				var insert_music:String = "INSERT INTO Music (Path, Album, Artist, Length, Title, Genre) VALUES ('"+music.Path+"', '"+music.Album+"', '"+music.Artist+"', '"+music.Length+"', '"+music.Title+"', '"+music.Genre+"')";
+				
+				Database.createTable(dbname, music_table, insert_music);
 			}
 		}
 	}

@@ -6,104 +6,46 @@ package DB
 	import flash.data.SQLMode;
 	import flash.data.SQLResult;
 	import flash.data.SQLStatement;
+	import flash.errors.SQLError;
+	import flash.events.SQLErrorEvent;
+	import flash.events.SQLEvent;
 	import flash.filesystem.File;
 	
-	public class Database extends Logger
+	public class Database
 	{
-		private static var constructorKey:Object = {};
-		private static var instance:Database = null;
-		
-		private var databaseFile:File;
-		
-		public function Database(pConstructorKey:Object)
+
+		public static function createTable(dbName:String, dbtbstmt:String, dbinsert:String):void
 		{
-			if(pConstructorKey != constructorKey)
-			{
-				throw new Error("Instanciation illégale (constructeur privé)");
-			}
+			var sqlconn:SQLConnection = new SQLConnection;
+			var tbcreate:SQLStatement = new SQLStatement;
+			var insertst:SQLStatement = new SQLStatement;
 			
-			databaseFile = File.applicationStorageDirectory.resolvePath("database.sqlite");
-		}
-		
-		public static function get Instance():Database
-		{
-			if(instance == null)
-			{
-				instance = new Database(constructorKey);
-			}
-			return instance;
-		}
-		
-		private function executeQuery(pMode:String, pQuery:String, pParameters:Object = null, pClass:Class=null):SQLResult
-		{
-			try
-			{
-				var Connection:SQLConnection = new SQLConnection();
-				var Statement:SQLStatement = new SQLStatement();
-				Connection.open(databaseFile, pMode);
+			var folder:File = File.applicationDirectory;
+			var dbPath:File = folder.resolvePath(dbName);
+			
+			sqlconn.addEventListener(SQLEvent.OPEN, dbCreated);
+			sqlconn.addEventListener(SQLErrorEvent.ERROR, dbError);
+			tbcreate.addEventListener(SQLEvent.RESULT, tbCreated);
+			tbcreate.addEventListener(SQLErrorEvent.ERROR, tbError);
+			insertst.addEventListener(SQLEvent.RESULT, recCreated);
+			insertst.addEventListener(SQLErrorEvent.ERROR, recError);
+			
+			sqlconn.open(dbPath);
+			
+			if (dbtbstmt != null)
+			{	
+				tbcreate.sqlConnection = sqlconn;
+				tbcreate.text = dbtbstmt;
 				
-				Statement.sqlConnection = Connection;
-				
-				Statement.text = pQuery;
-				
-				if(pParameters != null)
-				{
-					for(var id:String in pParameters)
-					{
-						Statement.parameters[id] = pParameters[id];
-					}
-				}
-				if(pClass != null)
-				{
-					Statement.itemClass = pClass;
-				}
-				
-				Statement.execute();
-				return Statement.getResult();
-			}
-			catch(error:String)
-			{
-				this.logError("Requête : <" + pQuery + ">\n" + error);
-			}
-			finally
-			{
-				Connection.close();
-			}
-			return null;
-		}
-		
-		public function insertMusic(pMusic:Music):Boolean
-		{
-			var sQuery:String = "INSERT INTO Music (Path, ID_Echonest, Album, Artist, Length, Title, Genre) VALUES (@Path, @ID_Echonest, @Album, @Artist, @Length, @Title, @Genre)";
-			var params:Object = {"@Path" : pMusic.Path, "@ID_Echonest" : pMusic.ID_Echonest, "@Album" : pMusic.Album, "@Artist" : pMusic.Artist, "@Length" : pMusic.Length, "@Title" : pMusic.Title, "@Genre" : pMusic.Genre};
-			
-			var result:SQLResult = this.executeQuery(SQLMode.UPDATE, sQuery, params);
-			
-			if(result != null)
-			{
-				pMusic.ID_Music = result.lastInsertRowID;
-				return true;
+				tbcreate.execute();
 			}
 			
-			return false;
-		}
-		
-		public function getMusicList():Array
-		{
-			var result:SQLResult = this.executeQuery(SQLMode.READ, "SELECT * FROM Music", null, BO.Music);
+			if (dbinsert != null)
+			{
+				insertst.sqlConnection = sqlconn;
+				insertst.text = dbinsert;
 			
-			if(result != null)
-			{
-				return result.data == null ? new Array() : result.data;
-			}
-			return null;
-		}
-		
-		public function createDatabase():Boolean
-		{
-			if(databaseFile.exists)
-			{
-				return true;
+				insertst.execute();
 			}
 			
 			var sQuery:String = "CREATE TABLE In_Playlist (";
@@ -114,25 +56,43 @@ package DB
 			sQuery += "FOREIGN KEY(ID_Playlist) REFERENCES Playlist(ID_Playlist) ";
 			sQuery += "); ";
 			
-			sQuery += "CREATE TABLE Music (";
-			sQuery += "ID_Music INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, ";
-			sQuery += "Path NVARCHAR(255) UNIQUE NOT NULL, ";
-			sQuery += "ID_Echonest INTEGER UNIQUE NULL, ";
-			sQuery += "Album NVARCHAR(255) NULL, ";
-			sQuery += "Artist NVARCHAR(255) NULL, ";
-			sQuery += "Length INTEGER NULL, ";
-			sQuery += "Title NVARCHAR(255) NOT NULL, ";
-			sQuery += "Genre NVARCHAR(255) NULL ";
-			sQuery += "); ";
-			
 			sQuery += "CREATE TABLE Playlist (";
 			sQuery += "ID_Playlist INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, ";
 			sQuery += "Name NVARCHAR(255) UNIQUE NOT NULL ";
 			sQuery += "); ";
-			
-			var result:SQLResult = this.executeQuery(SQLMode.CREATE, sQuery);
-			
-			return result != null;
+		}
+		
+		private static function dbCreated(event:SQLEvent):void
+		{
+			trace("Database Created");
+		}
+		
+		private static function dbError(event:SQLErrorEvent):void
+		{
+			trace("Error message : ", event.error.message);
+			trace("Details : ", event.error.details);
+		}
+		
+		private static function tbCreated(event:SQLEvent):void
+		{
+			trace("Table Created");
+		}
+		
+		private static function tbError(event:SQLErrorEvent):void
+		{
+			trace("Error message : ", event.error.message);
+			trace("Details : ", event.error.details);
+		}
+		
+		private static function recCreated(event:SQLEvent):void
+		{
+			trace("Record Created");
+		}
+		
+		private static function recError(event:SQLErrorEvent):void
+		{
+			trace("Error message : ", event.error.message);
+			trace("Details : ", event.error.details);
 		}
 	}
 }
