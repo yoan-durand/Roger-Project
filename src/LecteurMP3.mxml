@@ -5,7 +5,7 @@
 					   width="800" height="600" backgroundColor="#FFFFFF"
 					   preloaderChromeColor="#FFFFF"
 					   title="AirMusic"
-					   initialize="test_data();initGenre();firtArtist();Albuminit()">
+					   initialize="test_data();initGenre();firtArtist();Albuminit();init_application();">
 	<s:layout>
 		<s:BasicLayout/>
 	</s:layout>
@@ -16,7 +16,6 @@
 			import mx.core.UIComponent;
 			import mx.events.FlexNativeWindowBoundsEvent;
 			import mx.events.MenuEvent;
-			import mx.states.AddChild;
 				
 			private var DGArray:Array = [
 				{TitleField:'Master Exploder', ArtistField:'Tenacious D', AlbumField:'The pick of destiny', GenreField:'Rock', LengthField:'3:52'},
@@ -37,16 +36,22 @@
 			[Bindable]
 			public var initArtist:ArrayList;
 			
+			protected function init_application ()
+			{
+				var application:Application = Application.Instance;
+			}
+			
 			protected function Play_clickHandler(event:MouseEvent):void
-			{				
-				
-				
+			{
+				var player:Player = new Player ();
+				var appli:Application = Application.Instance;
+				appli._player.test();
 			}
 			
 			protected function Stop_clickHandler(event:MouseEvent):void
 			{
-				// TODO Auto-generated method stub
-				
+				var appli:Application = Application.Instance;
+				appli._player.stop();
 			}
 			
 			protected function myMenuBar_changeHandler(event:MenuEvent):void
@@ -105,13 +110,14 @@
 			
 			protected function Rewind_clickHandler(event:MouseEvent):void
 			{
-				// TODO Auto-generated method stub
-				
+				var appli:Application = Application.Instance;
+				appli._player.rewind();
 			}
 			
 			protected function forwind_clickHandler(event:MouseEvent):void
 			{
-				// TODO Auto-generated method stub
+				var appli:Application = Application.Instance;
+				appli._player.forward();
 				
 			}
 			
