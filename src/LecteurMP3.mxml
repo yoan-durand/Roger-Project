@@ -5,7 +5,7 @@
 					   width="800" height="600" backgroundColor="#FFFFFF"
 					   preloaderChromeColor="#FFFFF"
 					   title="AirMusic"
-					   initialize="test_data();initGenre();firtArtist();Albuminit();init_application();">
+					   initialize="init_All();init_application();">
 	<s:layout>
 		<s:BasicLayout/>
 	</s:layout>
@@ -84,21 +84,14 @@
 				var array:ArrayList = new ArrayList (change);
 				initAlbum = array;
 			}
-			public function initGenre() : void
+			
+			
+			public function init_All()
 			{
 				initGen = new ArrayList(gen);
-			}
-			public function test_data () : void
-			{
-				init = new ArrayList (DGArray);
-			}
-			public function firtArtist() : void
-			{
-				initArtist = new ArrayList(artist);
-			}
-			public function Albuminit() : void
-			{
-				initAlbum = new ArrayList(album);
+				init = new ArrayList();
+				initArtist= new ArrayList();
+				initAlbum = new ArrayList();
 			}
 			
 			
