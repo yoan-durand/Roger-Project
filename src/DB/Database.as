@@ -72,7 +72,7 @@ package DB
 			return null;
 		}
 		
-		public function insertMusic(pMusic:BO.Music):Boolean
+		public function insertMusic(pMusic:Music):Boolean
 		{
 			var sQuery:String = "INSERT INTO Music (Path, ID_Echonest, Album, Artist, Length, Title, Genre) VALUES (@Path, @ID_Echonest, @Album, @Artist, @Length, @Title, @Genre)";
 			var params:Object = {"@Path" : pMusic.Path, "@ID_Echonest" : pMusic.ID_Echonest, "@Album" : pMusic.Album, "@Artist" : pMusic.Artist, "@Length" : pMusic.Length, "@Title" : pMusic.Title, "@Genre" : pMusic.Genre};

@@ -12,19 +12,21 @@
 	<fx:Script>
 		<![CDATA[
 			import mx.controls.Menu;
+			import mx.core.UIComponent;
 			import mx.events.FlexNativeWindowBoundsEvent;
 			import mx.events.MenuEvent;
-			import mx.core.UIComponent
 				
 			protected function Play_clickHandler(event:MouseEvent):void
-			{				
-				
-				
+			{
+				var player:Player = new Player ();
+				var appli:Application = Application.Instance;
+				appli.player.test();
 			}
 			
 			protected function Stop_clickHandler(event:MouseEvent):void
 			{
-				// TODO Auto-generated method stub
+				var appli:Application = Application.Instance;
+				appli.player.stop();
 				
 			}
 			

@@ -77,12 +77,12 @@ package
 			}
 		}
 		
-		protected function _ioErrorHandler (event : ErrorEvent)
+		protected function _ioErrorHandler (event : ErrorEvent):void
 		{
 			
 		}
 		
-		private function parse_mp3 (path : String)
+		private function parse_mp3 (path : String):void
 		{
 			var soundLoaderContext:SoundLoaderContext = new SoundLoaderContext();
 			soundLoaderContext.checkPolicyFile = true;
@@ -110,10 +110,12 @@ package
 				music.Genre = genre;
 				music.Length = length;
 				music.Path = snd.url;
+				trace(music.Path);
 				snd.close();
 				
+				var base:DB.Database = DB.Database.Instance;
 				Database.Instance.createDatabase();
-				Database.Instance.insertMusic(music);
+				base.insertMusic(music);
 			}
 		}
 	}
