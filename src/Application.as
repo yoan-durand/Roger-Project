@@ -9,6 +9,7 @@ package
 		public var _player:Player;
 		private var _list_music:Array;
 		private var _display:Display;
+		private var _list_playlist:Array;
 		
 		public function Application(pConstructorKey:Object)
 		{
@@ -29,6 +30,16 @@ package
 		public function set display(value:Display):void
 		{
 			_display = value;
+		}
+
+		public function get list_playlist():Array
+		{
+			return _list_playlist;
+		}
+
+		public function set list_playlist(value:Array):void
+		{
+			_list_playlist = value;
 		}
 
 		public function get list_music():Array
@@ -84,6 +95,21 @@ package
 			Database.exec_query(in_playlist_table, null);
 			
 			_list_music = Database.list_query("SELECT * FROM Music");
+			var playlists:Array = Database.list_query("SELECT * FROM Playlist");
+			if (playlists.length != 0)
+			{
+				for each (var i:int in playlists) 
+				{
+					var zic_in_playlist:Array = Database.list_query("SELECT * FROM In_Playlist WHERE ID_Playlist = "+playlists[i].ID_Playlist);
+					var playlist:Object = new Object;
+					playlist.Name = playlists[i].Name;
+					for each (var j:int in zic_in_playlist)
+					{
+						var zic:Array = Database.list_query("SELECT * FROM Music WHERE ID_Music = "+zic_in_playlist[j].ID_Music);
+						
+					}
+				}
+			}
 		}
 	}
 }
