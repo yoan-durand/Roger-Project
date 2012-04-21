@@ -103,7 +103,7 @@ package
 				music.Album = id3.album != null ? id3.album : "";
 				music.Genre = id3.genre != null ? id3.genre : "";
 				var snd:Sound = event.target as Sound;
-				music.Length = snd.length ;
+				music.Length = snd.length;
 				music.Path = snd.url != null ? snd.url : "";
 				snd.close();
 				

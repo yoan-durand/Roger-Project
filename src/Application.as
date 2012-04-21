@@ -9,7 +9,7 @@ package
 		public var _player:Player;
 		private var _list_music:Array;
 		private var _display:Display;
-		private var _list_playlist:Array;
+		private var _list_playlist:Array = new Array;
 		
 		public function Application(pConstructorKey:Object)
 		{
@@ -102,12 +102,15 @@ package
 				{
 					var zic_in_playlist:Array = Database.list_query("SELECT * FROM In_Playlist WHERE ID_Playlist = "+playlists[i].ID_Playlist);
 					var playlist:Object = new Object;
+					playlist.ID_Playlist = playlists[i].ID_Playlist;
 					playlist.Name = playlists[i].Name;
+					playlist.Musics = new Array;
 					for each (var j:int in zic_in_playlist)
 					{
 						var zic:Array = Database.list_query("SELECT * FROM Music WHERE ID_Music = "+zic_in_playlist[j].ID_Music);
-						
+						playlist.Musics.push(zic[0]);
 					}
+					_list_playlist.push(playlist);
 				}
 			}
 		}

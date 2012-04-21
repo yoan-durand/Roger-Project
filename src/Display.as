@@ -89,7 +89,7 @@ package
 			{
 				for each (var t:* in tab_m)
 				{
-					musicTab.push ({TitleField:t.Title, ArtistField:t.Artist, AlbumField:t.Album, GenreField:t.Genre, LengthField:Tool.lengthtoString(t.length)});
+					musicTab.push ({TitleField:t.Title, ArtistField:t.Artist, AlbumField:t.Album, GenreField:t.Genre, LengthField:Tool.lengthtoString(t.Length)});
 					
 					if (search(artistTab, t.Artist) == false)
 					{
