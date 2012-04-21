@@ -70,7 +70,7 @@ package
 			play ();
 		}
 		
-		public function change_position (position:int)
+		public function change_position (position:int):void
 		{
 			if (_channel != null)
 			{
@@ -87,7 +87,7 @@ package
 			return _channel.position;
 		}
 		
-		public function play ()
+		public function play ():void
 		{
 			if (_music_sound == null)
 			{

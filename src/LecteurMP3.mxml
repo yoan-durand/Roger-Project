@@ -34,7 +34,7 @@
 			[Bindable]
 			public var initArtist:ArrayList;
 			
-			protected function init_application ()
+			protected function init_application ():void
 			{
 				var application:Application = Application.Instance;
 			}
