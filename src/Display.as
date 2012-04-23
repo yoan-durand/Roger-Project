@@ -3,13 +3,23 @@ package
 	import DB.Database;
 	
 	import flash.net.dns.AAAARecord;
-
+	
+	import mx.collections.ArrayCollection;
+	[bindable]
 	public class Display
 	{
 		private var _albumTab:Array;
 		private var _artistTab:Array;
 		private var _genreTab:Array;
 		private var _musicTab:Array;
+		[bindable]
+		private var _musicCollection:ArrayCollection;
+		[bindable]
+		private var _genreCollection: ArrayCollection;
+		[bindable]
+		private var _albumCollection:ArrayCollection;
+		[bindable]
+		private var _artistCollection:ArrayCollection;
 		
 		public function Display()
 		{
@@ -18,6 +28,46 @@ package
 			albumTab = new Array ();
 			genreTab = new Array ();
 			
+		}
+
+		public function get artistCollection():ArrayCollection
+		{
+			return _artistCollection;
+		}
+
+		public function set artistCollection(value:ArrayCollection):void
+		{
+			_artistCollection = value;
+		}
+
+		public function get albumCollection():ArrayCollection
+		{
+			return _albumCollection;
+		}
+
+		public function set albumCollection(value:ArrayCollection):void
+		{
+			_albumCollection = value;
+		}
+
+		public function get genreCollection():ArrayCollection
+		{
+			return _genreCollection;
+		}
+
+		public function set genreCollection(value:ArrayCollection):void
+		{
+			_genreCollection = value;
+		}
+
+		public function get musicCollection():ArrayCollection
+		{
+			return _musicCollection;
+		}
+
+		public function set musicCollection(value:ArrayCollection):void
+		{
+			_musicCollection = value;
 		}
 
 		public function get musicTab():Array
@@ -106,7 +156,38 @@ package
 				}
 					
 			}
+			
+			musicCollection = new ArrayCollection (_musicTab);
+			artistCollection = new ArrayCollection (_artistTab);
+			albumCollection = new ArrayCollection (_albumTab);
+			genreCollection = new ArrayCollection (_genreTab);
 		
+		}
+	
+		public function update (tab_m:Array) : void
+		{
+			if (tab_m != null)
+			{
+				for each (var t:* in tab_m)
+				{
+					musicTab.push ({TitleField:t.Title, ArtistField:t.Artist, AlbumField:t.Album, GenreField:t.Genre, LengthField:Tool.lengthtoString(t.Length)});
+					
+					if (search(artistTab, t.Artist) == false)
+					{
+						artistTab.push({ArtistBase:t.Artist});
+					}
+					if (search(genreTab, t.Genre) == false)
+					{
+						genreTab.push({GenreBase:t.Genre});
+					}
+					if (search(albumTab, t.Album) == false)
+					{
+						albumTab.push({AlbumBase:t.Album});
+					}
+				}
+				
+				
+			}
 		}
 	}
 }

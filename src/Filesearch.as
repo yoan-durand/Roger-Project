@@ -113,6 +113,7 @@ package
 				{
 					music.ID_Music = query_result.lastInsertRowID;
 					Application.Instance.list_music.push(music);
+					Application.Instance.display.fill_tab(Application.Instance.list_music);
 				}
 			}
 		}
