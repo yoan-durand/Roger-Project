@@ -183,7 +183,7 @@ package
 			{
 				for each (var play:* in list)
 				{
-					playlist.push({PlaylistField:play.Name});
+					playlist.push({PlaylistField:play.Name, id:play.ID_Playlist});
 				}
 			}
 			playCollection = new ArrayCollection (playlist);
@@ -196,7 +196,7 @@ package
 				{
 					if (search_m(musicTab, t) == false)
 					{
-						musicTab.push ({TitleField:t.Title, ArtistField:t.Artist, AlbumField:t.Album, GenreField:t.Genre, LengthField:Tool.lengthtoString(t.Length)});
+						musicTab.push ({TitleField:t.Title, ArtistField:t.Artist, AlbumField:t.Album, GenreField:t.Genre, LengthField:Tool.lengthtoString(t.Length), Path:t.Path, ID:t.ID_Music});
 					}			
 					if (search(artistTab, t.Artist) == false)
 					{

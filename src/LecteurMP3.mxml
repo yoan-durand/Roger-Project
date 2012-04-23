@@ -243,13 +243,13 @@
 				<s:HScrollBar width="100%"/>
 			</s:VGroup>
 			<s:HGroup id="PlayElement" width="100%" height="11%" verticalAlign="middle">
-				<s:Button id="Rewind" y="20" width="62" height="100%" label="Rewind"
+				<s:Button id="Rewind" y="20" width="25%" height="100%" label="Rewind"
 						  click="Rewind_clickHandler(event)"/>
-				<s:Button id="Play" y="20" width="65" height="100%" label="Play"
+				<s:Button id="Play" y="20" width="25%" height="100%" label="Play"
 						  click="Play_clickHandler(event)"/>
-				<s:Button id="Stop" y="21" width="65" height="100%" label="Stop"
+				<s:Button id="Stop" y="21" width="25%" height="100%" label="Stop"
 						  click="Stop_clickHandler(event)"/>
-				<s:Button id="forwind" y="19" width="62" height="100%" label="Forwind"
+				<s:Button id="forwind" y="19" width="25%" height="100%" label="Forwind"
 						  click="forwind_clickHandler(event)"/>
 				<s:HSlider id="SpeekerLevel" width="71" change="SpeekerLevel_changeHandler(event)"
 						   maximum="1" minimum="0" snapInterval="0.01" value="1"/>
