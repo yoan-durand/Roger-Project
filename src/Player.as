@@ -3,11 +3,18 @@ package
 	import BO.Music;
 	
 	import flash.events.Event;
+	import flash.events.ProgressEvent;
+	import flash.events.TimerEvent;
 	import flash.media.Sound;
 	import flash.media.SoundChannel;
 	import flash.media.SoundLoaderContext;
-	import flash.net.URLRequest;
 	import flash.media.SoundTransform;
+	import flash.net.URLRequest;
+	import flash.utils.Timer;
+	
+	import flashx.textLayout.formats.Float;
+	
+	import mx.core.FlexGlobals;
 
 	public class Player
 	{
@@ -15,11 +22,14 @@ package
 		private var _music_sound:Sound;
 		public  var _index:int;
 		private var _channel:SoundChannel;
+		private var _volume_info:SoundTransform; //infos Volume et Pan
+		private var positionTimer:Timer;
 		
 		public function Player ()
 		{
 			_index = 0;
 			_music_list = new Array ();
+			_volume_info = new SoundTransform(1, 0);
 		}
 		
 		public function get music_list():Array
@@ -41,18 +51,46 @@ package
 				soundLoaderContext.checkPolicyFile = true;
 				
 				var mp3:URLRequest = new URLRequest(music_data.Path);
-				trace (mp3);
 				var sound:Sound = new Sound();
 				sound.load(mp3,soundLoaderContext);
 				_music_sound = sound;
-				sound.addEventListener(Event.COMPLETE, completeHandler);
+				_music_sound.addEventListener(Event.COMPLETE, load_complete);
+				
 			}
 		}
 		
+		private function load_complete (event:Event):void
+		{
+			play ();
+		}
 		
 		
+		private function positionTimerHandler (event:Event)
+		{
+		/*	event.target.value;*/
+			
+			if (_channel != null)
+			{
+				var estimatedLength:int =  
+					Math.ceil(_music_sound.length / (_music_sound.bytesLoaded / _music_sound.bytesTotal)); 
+				var playbackPercent:Number =  
+					Math.round( 100 * (100 * (_channel.position / estimatedLength))) / 100;
+				trace (estimatedLength);
+				trace (playbackPercent);
+				
+				FlexGlobals.topLevelApplication.progressBar.value = playbackPercent;
+			}
+		}
 		private function completeHandler (event:Event):void
 		{
+			_channel.stop();
+			_channel = null;
+			//_channel.removeEventListener(Event.SOUND_COMPLETE, _channel);  
+			_music_sound = null;
+			positionTimer.stop();
+			FlexGlobals.topLevelApplication.progressBar.value = 0;
+			_index++;
+			play ();
 			trace("Music end");
 		}
 		
@@ -70,14 +108,16 @@ package
 			play ();
 		}
 		
-		public function change_position (position:int):void
+		public function change_position (position:Number):void
 		{
 			if (_channel != null)
 			{
 				_channel.stop ();
 				if (_music_sound != null)
 				{
-					_channel = _music_sound.play (position);
+					_channel = _music_sound.play (Tool.getTimefromPercentage(position, _music_sound));
+					_channel.soundTransform = _volume_info;
+					_channel.addEventListener(Event.SOUND_COMPLETE, completeHandler);
 				}
 			}
 		}
@@ -93,11 +133,23 @@ package
 			{
 				load_sound ();
 			}
-			
-			//On vérifie si le load c'est bien effectué
-			if (_music_sound != null)
+			else
 			{
-				_channel = _music_sound.play ();
+				if (_channel == null)
+				{
+					var position:Number = FlexGlobals.topLevelApplication.progressBar.value;
+					_channel = _music_sound.play (Tool.getTimefromPercentage(position, _music_sound));
+					_channel.soundTransform = _volume_info;
+					_channel.addEventListener(Event.SOUND_COMPLETE, completeHandler);
+					positionTimer = new Timer(500);
+					positionTimer.addEventListener(TimerEvent.TIMER, positionTimerHandler);
+					positionTimer.start();
+				}
+				else
+				{
+					_channel.stop();
+					_channel = null;
+				}
 			}
 		}
 		
@@ -107,7 +159,10 @@ package
 			{
 				_channel.stop();
 				_channel = null;
+				//_channel.removeEventListener(Event.SOUND_COMPLETE, _channel);  
 				_music_sound = null;
+				positionTimer.stop();
+				FlexGlobals.topLevelApplication.progressBar.value = 0;
 			}
 		}
 		
@@ -131,10 +186,13 @@ package
 			play();
 		}
 		
-		private function change_volume (val:int):void
+		public function change_volume (val:Number):void
 		{
-			var transform:SoundTransform = new SoundTransform(val, 1.0);
-			_channel.soundTransform = transform;
+			_volume_info = new SoundTransform(val, 0);
+			if (_channel != null)
+			{
+				_channel.soundTransform = _volume_info;
+			}
 		}
 		
 		

@@ -19,9 +19,11 @@
 			import mx.controls.Menu;
 			import mx.core.UIComponent;
 			import mx.events.FlexNativeWindowBoundsEvent;
-			import mx.events.MenuEvent;
-			
+			import mx.events.MenuEvent;			
 			import spark.events.GridSelectionEvent;
+			import mx.events.SliderEvent;
+			import mx.controls.sliderClasses.Slider;
+			
 			
 			protected function init_application ():void
 			{
@@ -70,11 +72,14 @@
 				var name:String = "";
 				var insert_play:String = "INSERT INTO Playlist (Name) VALUES ('"+name+"')";
 				var sql_res:SQLResult = Database.exec_query(null,  insert_play);
-				var playlist:Object = new Object;
-				playlist.ID_Playlist = sql_res.lastInsertRowID;
-				playlist.Name = name;
-				playlist.Musics = new Array;
-				Application.Instance.list_playlist.push(playlist);
+				if (sql_res != null)
+				{
+					var playlist:Object = new Object;
+					playlist.ID_Playlist = sql_res.lastInsertRowID;
+					playlist.Name = name;
+					playlist.Musics = new Array;
+					Application.Instance.list_playlist.push(playlist);
+				}
 				
 				/* TODO : Afficher la playlist nouvellement créée ds la partie correspondante */
 			}
@@ -92,8 +97,9 @@
 			
 			protected function SpeekerLevel_changeHandler(event:Event):void
 			{
-				// TODO Auto-generated method stub
-				
+				//trace (String(event.currentTarget.value));
+				var appli:Application = Application.Instance;
+				appli._player.change_volume (event.currentTarget.value);
 			}
 			
 			protected function Rewind_clickHandler(event:MouseEvent):void
@@ -124,12 +130,20 @@
 			protected function PlayProgress_changeHandler(event:Event):void
 			{
 				// TODO Auto-generated method stub
-				
+					
 			}
 			
 			protected function MusicTable_selectionChangeHandler(event:GridSelectionEvent):void
 			{
 				// TODO Auto-generated method stub
+				
+			}
+			
+			protected function progressBar_changeHandler(event:Event):void
+			{
+				progressBar.value = event.currentTarget.value;
+				var appli:Application = Application.Instance;
+				appli._player.change_position(event.currentTarget.value);
 				
 			}
 			
@@ -229,18 +243,28 @@
 				<s:HScrollBar width="100%"/>
 			</s:VGroup>
 			<s:HGroup id="PlayElement" width="100%" height="11%" verticalAlign="middle">
-				<s:Button id="Rewind" y="20" width="25%" height="100%" label="Rewind"
+				<s:Button id="Rewind" y="20" width="62" height="100%" label="Rewind"
 						  click="Rewind_clickHandler(event)"/>
-				<s:Button id="Play" y="20" width="25%" height="100%" label="Play"
+				<s:Button id="Play" y="20" width="65" height="100%" label="Play"
 						  click="Play_clickHandler(event)"/>
-				<s:Button id="Stop" y="21" width="25%" height="100%" label="Stop"
+				<s:Button id="Stop" y="21" width="65" height="100%" label="Stop"
 						  click="Stop_clickHandler(event)"/>
-				<s:Button id="forwind" y="19" width="25%" height="100%" label="Forwind"
+				<s:Button id="forwind" y="19" width="62" height="100%" label="Forwind"
 						  click="forwind_clickHandler(event)"/>
-				<s:Image id="SpeekerImage" width="10%" height="100%"/>
-				<s:HSlider id="SpeekerLevel" width="71" change="SpeekerLevel_changeHandler(event)"/>
-				<s:HSlider id="PlayProgress" width="60%" change="PlayProgress_changeHandler(event)"
-						   skinClass="spark.skins.spark.HSliderSkin"/>
+				<s:HSlider id="SpeekerLevel" width="71" change="SpeekerLevel_changeHandler(event)"
+						   maximum="1" minimum="0" snapInterval="0.01" value="1"/>
+				<s:HSlider id="progressBar" width="349" change="progressBar_changeHandler(event)"
+						   maximum="100" minimum="0" skinClass="spark.skins.spark.HSliderSkin"
+						   stepSize="0.05"/>
+				
+				<!--<mx:ProgressBar id="progressBar" visible="true" y="8" width="326" height="100%"
+								label="Time" color="#FF0E0E" direction="right" enabled="true"
+								indeterminate="false"
+								labelPlacement="right"
+								barSkin="skins.CustomSkin"
+								mode="manual"
+								maximum="100" minimum="0"/>-->
+				
 				<s:ToggleButton id="ShuffleButton" width="15%" height="100%" label="Shuffle"
 								click="ShuffleButton_clickHandler(event)"/>
 				<s:ToggleButton id="RepeatButton" width="15%" height="100%" label="Repeat"
