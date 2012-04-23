@@ -118,6 +118,11 @@ package
 		{
 			for (var i:int = 0; i < array.length; i++)
 			{
+				if (array[i].TitleField === elt)
+				{
+					return true;
+				}
+				
 				if (array[i].ArtistBase === elt)
 				{
 					return true;
@@ -137,14 +142,28 @@ package
 			return false;
 		}
 		
+		public function search_m(array:Array, elt:*) : Boolean
+		{
+			for (var i:int = 0; i < array.length; i++)
+			{
+				if ((array[i].TitleField === elt.Title) && (array[i].ArtistField === elt.Artist) && (array[i].AlbumField === elt.Album))
+				{
+						return true;
+				}
+			}
+			return false;
+		}
+		
 		public function fill_tab(tab_m:Array) : void
 		{		
 			if (tab_m != null)
 			{
 				for each (var t:* in tab_m)
 				{
-					musicTab.push ({TitleField:t.Title, ArtistField:t.Artist, AlbumField:t.Album, GenreField:t.Genre, LengthField:Tool.lengthtoString(t.Length)});
-					
+					if (search_m(musicTab, t) == false)
+					{
+						musicTab.push ({TitleField:t.Title, ArtistField:t.Artist, AlbumField:t.Album, GenreField:t.Genre, LengthField:Tool.lengthtoString(t.Length)});
+					}			
 					if (search(artistTab, t.Artist) == false)
 					{
 						artistTab.push({ArtistBase:t.Artist});
@@ -174,8 +193,10 @@ package
 			{
 				for each (var t:* in tab_m)
 				{
-					musicTab.push ({TitleField:t.Title, ArtistField:t.Artist, AlbumField:t.Album, GenreField:t.Genre, LengthField:Tool.lengthtoString(t.Length)});
-					
+					if (search(musicTab, t.Title) == false)
+					{
+						musicTab.push ({TitleField:t.Title, ArtistField:t.Artist, AlbumField:t.Album, GenreField:t.Genre, LengthField:Tool.lengthtoString(t.Length)});
+					}
 					if (search(artistTab, t.Artist) == false)
 					{
 						artistTab.push({ArtistBase:t.Artist});
