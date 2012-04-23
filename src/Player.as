@@ -54,8 +54,14 @@ package
 				var sound:Sound = new Sound();
 				sound.load(mp3,soundLoaderContext);
 				_music_sound = sound;
-				sound.addEventListener(Event.SOUND_COMPLETE, completeHandler);
+				_music_sound.addEventListener(Event.COMPLETE, load_complete);
+				
 			}
+		}
+		
+		private function load_complete (event:Event):void
+		{
+			play ();
 		}
 		
 		
@@ -77,6 +83,14 @@ package
 		}
 		private function completeHandler (event:Event):void
 		{
+			_channel.stop();
+			_channel = null;
+			//_channel.removeEventListener(Event.SOUND_COMPLETE, _channel);  
+			_music_sound = null;
+			positionTimer.stop();
+			FlexGlobals.topLevelApplication.progressBar.value = 0;
+			_index++;
+			play ();
 			trace("Music end");
 		}
 		
@@ -101,12 +115,9 @@ package
 				_channel.stop ();
 				if (_music_sound != null)
 				{
-					var estimatedLength:int =  
-						Math.ceil(_music_sound.length / (_music_sound.bytesLoaded / _music_sound.bytesTotal));
-					var time:int = ((position * estimatedLength) / 100);
-					trace ("TIME" + time);
-					_channel = _music_sound.play (time);
+					_channel = _music_sound.play (Tool.getTimefromPercentage(position, _music_sound));
 					_channel.soundTransform = _volume_info;
+					_channel.addEventListener(Event.SOUND_COMPLETE, completeHandler);
 				}
 			}
 		}
@@ -122,15 +133,23 @@ package
 			{
 				load_sound ();
 			}
-			
-			//On vérifie si le load c'est bien effectué
-			if (_music_sound != null)
+			else
 			{
-				_channel = _music_sound.play ();
-				_channel.soundTransform = _volume_info;
-				positionTimer = new Timer(500);
-				positionTimer.addEventListener(TimerEvent.TIMER, positionTimerHandler);
-				positionTimer.start();
+				if (_channel == null)
+				{
+					var position:Number = FlexGlobals.topLevelApplication.progressBar.value;
+					_channel = _music_sound.play (Tool.getTimefromPercentage(position, _music_sound));
+					_channel.soundTransform = _volume_info;
+					_channel.addEventListener(Event.SOUND_COMPLETE, completeHandler);
+					positionTimer = new Timer(500);
+					positionTimer.addEventListener(TimerEvent.TIMER, positionTimerHandler);
+					positionTimer.start();
+				}
+				else
+				{
+					_channel.stop();
+					_channel = null;
+				}
 			}
 		}
 		
@@ -140,6 +159,7 @@ package
 			{
 				_channel.stop();
 				_channel = null;
+				//_channel.removeEventListener(Event.SOUND_COMPLETE, _channel);  
 				_music_sound = null;
 				positionTimer.stop();
 				FlexGlobals.topLevelApplication.progressBar.value = 0;
