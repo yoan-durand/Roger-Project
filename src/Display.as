@@ -11,7 +11,8 @@ package
 		private var _artistTab:Array;
 		private var _genreTab:Array;
 		private var _musicTab:Array;
-		
+		private var _playlist:Array;
+			
 		private var _musicCollection:ArrayCollection;
 
 		private var _genreCollection: ArrayCollection;
@@ -20,16 +21,38 @@ package
 	
 		private var _artistCollection:ArrayCollection;
 		
+		private var _playCollection:ArrayCollection;
 		public function Display()
 		{
 		 	musicTab = new Array();
 		    artistTab = new Array();
 			albumTab = new Array ();
 			genreTab = new Array ();
+			playlist = new Array ();
 			
 		}
 
-		
+		public function get playlist():Array
+		{
+			return _playlist;
+		}
+
+		public function set playlist(value:Array):void
+		{
+			_playlist = value;
+		}
+
+		[Bindable]
+		public function get playCollection():ArrayCollection
+		{
+			return _playCollection;
+		}
+
+		public function set playCollection(value:ArrayCollection):void
+		{
+			_playCollection = value;
+		}
+
 		[Bindable]
 		public function get artistCollection():ArrayCollection
 		{
@@ -154,6 +177,17 @@ package
 			return false;
 		}
 		
+		public function fill_playlist (list:Array) : void
+		{
+			if (list != null)
+			{
+				for each (var play:* in list)
+				{
+					playlist.push({PlaylistField:play.Name});
+				}
+			}
+			playCollection = new ArrayCollection (playlist);
+		}
 		public function fill_tab(tab_m:Array) : void
 		{		
 			if (tab_m != null)
@@ -176,8 +210,7 @@ package
 					{
 						albumTab.push({AlbumBase:t.Album});
 					}
-				}
-					
+				}	
 			}
 			
 			musicCollection = new ArrayCollection (_musicTab);
@@ -193,7 +226,7 @@ package
 			{
 				for each (var t:* in tab_m)
 				{
-					if (search(musicTab, t.Title) == false)
+					if (search(musicTab, t) == false)
 					{
 						musicTab.push ({TitleField:t.Title, ArtistField:t.Artist, AlbumField:t.Album, GenreField:t.Genre, LengthField:Tool.lengthtoString(t.Length)});
 					}
@@ -213,6 +246,11 @@ package
 				
 				
 			}
+			
+			musicCollection = new ArrayCollection (_musicTab);
+			artistCollection = new ArrayCollection (_artistTab);
+			albumCollection = new ArrayCollection (_albumTab);
+			genreCollection = new ArrayCollection (_genreTab);
 		}
 	}
 }
