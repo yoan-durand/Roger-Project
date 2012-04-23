@@ -98,14 +98,14 @@ package
 			var playlists:Array = Database.list_query("SELECT * FROM Playlist");
 			if (playlists.length != 0)
 			{
-				for each (var i:int in playlists) 
+				for (var i:int = 0; i < playlists.length; i++) 
 				{
 					var zic_in_playlist:Array = Database.list_query("SELECT * FROM In_Playlist WHERE ID_Playlist = "+playlists[i].ID_Playlist);
 					var playlist:Object = new Object;
 					playlist.ID_Playlist = playlists[i].ID_Playlist;
 					playlist.Name = playlists[i].Name;
 					playlist.Musics = new Array;
-					for each (var j:int in zic_in_playlist)
+					for (var j:int = 0; j < zic_in_playlist.length; j++) 
 					{
 						var zic:Array = Database.list_query("SELECT * FROM Music WHERE ID_Music = "+zic_in_playlist[j].ID_Music);
 						playlist.Musics.push(zic[0]);

@@ -66,7 +66,7 @@
 					var file_search:Filesearch = new Filesearch ();			
 				}
 				
-				if (event.item.@name == "genre")
+				if (event.item.@name == "add_playlist")
 				{
 					test();
 				}
@@ -87,9 +87,8 @@
 			public function init_All() : void
 			{
 				var app:Application = Application.Instance;
-				var tab:Array = DB.Database.list_query("select * from Music");
 				
-				app.display.fill_tab(tab);
+				app.display.fill_tab(app.list_music);
 				initGen = new ArrayList(app.display.genreTab);
 				init = new ArrayList(app.display.musicTab);
 				initArtist= new ArrayList(app.display.artistTab);
@@ -153,7 +152,7 @@
 					<menuitem label="Fichier">
 						<menuitem label="Ajouter un dossier" name="add"/>
 						<menuitem label="Ouvrir un fichier" name="open"/>
-						<menuitem label = "Creer une playlist"/>
+						<menuitem label = "Creer une playlist" name="add_playlist"/>
 						<menuitem label ="Importer une playlist"/>
 					</menuitem>
 					<menuitem label="test">
