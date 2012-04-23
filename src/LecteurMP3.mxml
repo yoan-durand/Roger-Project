@@ -68,19 +68,25 @@
 				
 				if (event.item.@name == "add_playlist")
 				{
-					test();
+					add_playlist();
 				}
-				
-				
 			}
 			
-			public function test () : void
+			public function add_playlist () : void
 			{
-				var change:Array = [{AlbumBase:'The blackening'}, {AlbumBase:'The black album'}, {AlbumBase:'The number beast'}];
-			    
-				initAlbum.removeAll();
-				var array:ArrayList = new ArrayList (change);
-				initAlbum = array;
+				/* TODO : Implementer une fenêtre où remplir le nom de la playlist */
+				
+				/* Ajoute la playlist dans la base et dans la liste des playlists de l'Application */
+				var name:String = "";
+				var insert_play:String = "INSERT INTO Playlist (Name) VALUES ('"+name+"')";
+				var sql_res:SQLResult = Database.exec_query(null,  insert_play);
+				var playlist:Object = new Object;
+				playlist.ID_Playlist = sql_res.lastInsertRowID;
+				playlist.Name = name;
+				playlist.Musics = new Array;
+				Application.Instance.list_playlist.push(playlist);
+				
+				/* TODO : Afficher la playlist nouvellement créée ds la partie correspondante */
 			}
 			
 			
