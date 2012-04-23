@@ -56,26 +56,36 @@
 					
 				}
 				
-				if (event.item.@name == "genre")
+				if (event.item.@name == "add_playlist")
 				{
-					test();
+					add_playlist();
 				}
-				
-				
 			}
 			
-			public function test () : void
+			public function add_playlist () : void
 			{
+				/* TODO : Implementer une fenêtre où remplir le nom de la playlist */
 				
+				/* Ajoute la playlist dans la base et dans la liste des playlists de l'Application */
+				var name:String = "";
+				var insert_play:String = "INSERT INTO Playlist (Name) VALUES ('"+name+"')";
+				var sql_res:SQLResult = Database.exec_query(null,  insert_play);
+				var playlist:Object = new Object;
+				playlist.ID_Playlist = sql_res.lastInsertRowID;
+				playlist.Name = name;
+				playlist.Musics = new Array;
+				Application.Instance.list_playlist.push(playlist);
+				
+				/* TODO : Afficher la playlist nouvellement créée ds la partie correspondante */
 			}
 			
 			
 			public function init_All() : void
 			{
 				var app:Application = Application.Instance;
-				var tab:Array = DB.Database.list_query("select * from Music");
 				
-				app.display.fill_tab(tab);
+				app.display.fill_tab(Application.Instance.list_music);
+
 			}
 			
 			
@@ -135,7 +145,7 @@
 					<menuitem label="Fichier">
 						<menuitem label="Ajouter un dossier" name="add"/>
 						<menuitem label="Ouvrir un fichier" name="open"/>
-						<menuitem label = "Creer une playlist"/>
+						<menuitem label = "Creer une playlist" name="add_playlist"/>
 						<menuitem label ="Importer une playlist"/>
 					</menuitem>
 					<menuitem label="test">

@@ -5,20 +5,19 @@ package
 	import flash.net.dns.AAAARecord;
 	
 	import mx.collections.ArrayCollection;
-	[bindable]
 	public class Display
 	{
 		private var _albumTab:Array;
 		private var _artistTab:Array;
 		private var _genreTab:Array;
 		private var _musicTab:Array;
-		[bindable]
+		
 		private var _musicCollection:ArrayCollection;
-		[bindable]
+
 		private var _genreCollection: ArrayCollection;
-		[bindable]
+
 		private var _albumCollection:ArrayCollection;
-		[bindable]
+	
 		private var _artistCollection:ArrayCollection;
 		
 		public function Display()
@@ -30,26 +29,30 @@ package
 			
 		}
 
+		
+		[Bindable]
 		public function get artistCollection():ArrayCollection
 		{
 			return _artistCollection;
 		}
 
+		
 		public function set artistCollection(value:ArrayCollection):void
 		{
 			_artistCollection = value;
 		}
-
+		[Bindable]
 		public function get albumCollection():ArrayCollection
 		{
 			return _albumCollection;
 		}
-
+		
 		public function set albumCollection(value:ArrayCollection):void
 		{
 			_albumCollection = value;
 		}
-
+		
+		[Bindable]
 		public function get genreCollection():ArrayCollection
 		{
 			return _genreCollection;
@@ -60,6 +63,7 @@ package
 			_genreCollection = value;
 		}
 
+		[Bindable]
 		public function get musicCollection():ArrayCollection
 		{
 			return _musicCollection;
