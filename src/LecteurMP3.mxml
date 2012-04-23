@@ -72,11 +72,14 @@
 				var name:String = "";
 				var insert_play:String = "INSERT INTO Playlist (Name) VALUES ('"+name+"')";
 				var sql_res:SQLResult = Database.exec_query(null,  insert_play);
-				var playlist:Object = new Object;
-				playlist.ID_Playlist = sql_res.lastInsertRowID;
-				playlist.Name = name;
-				playlist.Musics = new Array;
-				Application.Instance.list_playlist.push(playlist);
+				if (sql_res != null)
+				{
+					var playlist:Object = new Object;
+					playlist.ID_Playlist = sql_res.lastInsertRowID;
+					playlist.Name = name;
+					playlist.Musics = new Array;
+					Application.Instance.list_playlist.push(playlist);
+				}
 				
 				/* TODO : Afficher la playlist nouvellement créée ds la partie correspondante */
 			}
