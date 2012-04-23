@@ -15,6 +15,7 @@
 		<![CDATA[
 			import DB.Database;
 			
+			import mx.collections.ArrayCollection;
 			import mx.controls.Menu;
 			import mx.core.UIComponent;
 			import mx.events.FlexNativeWindowBoundsEvent;
@@ -23,18 +24,6 @@
 			import mx.events.SliderEvent;
 			import mx.controls.sliderClasses.Slider;
 			
-			
-			[Bindable]
-			public var init:ArrayList;
-			
-			[Bindable]
-			public var initGen:ArrayList;
-			
-			[Bindable]
-			public var initAlbum:ArrayList;
-			
-			[Bindable]
-			public var initArtist:ArrayList;
 			
 			protected function init_application ():void
 			{
@@ -65,35 +54,40 @@
 				//trace ("event name" + event.item.@name);
 				if (event.item.@name == "add")
 				{
-					var file_search:Filesearch = new Filesearch ();			
+					var file_search:Filesearch = new Filesearch ();		
+					
 				}
 				
-				if (event.item.@name == "genre")
+				if (event.item.@name == "add_playlist")
 				{
-					test();
+					add_playlist();
 				}
 			}
 			
-			public function test () : void
+			public function add_playlist () : void
 			{
-				var change:Array = [{AlbumBase:'The blackening'}, {AlbumBase:'The black album'}, {AlbumBase:'The number beast'}];
-			    
-				initAlbum.removeAll();
-				var array:ArrayList = new ArrayList (change);
-				initAlbum = array;
+				/* TODO : Implementer une fenêtre où remplir le nom de la playlist */
+				
+				/* Ajoute la playlist dans la base et dans la liste des playlists de l'Application */
+				var name:String = "";
+				var insert_play:String = "INSERT INTO Playlist (Name) VALUES ('"+name+"')";
+				var sql_res:SQLResult = Database.exec_query(null,  insert_play);
+				var playlist:Object = new Object;
+				playlist.ID_Playlist = sql_res.lastInsertRowID;
+				playlist.Name = name;
+				playlist.Musics = new Array;
+				Application.Instance.list_playlist.push(playlist);
+				
+				/* TODO : Afficher la playlist nouvellement créée ds la partie correspondante */
 			}
 			
 			
 			public function init_All() : void
 			{
 				var app:Application = Application.Instance;
-				var tab:Array = DB.Database.list_query("select * from Music");
 				
-				app.display.fill_tab(tab);
-				initGen = new ArrayList(app.display.genreTab);
-				init = new ArrayList(app.display.musicTab);
-				initArtist= new ArrayList(app.display.artistTab);
-				initAlbum = new ArrayList(app.display.albumTab);
+				app.display.fill_tab(Application.Instance.list_music);
+
 			}
 			
 			
@@ -162,7 +156,7 @@
 					<menuitem label="Fichier">
 						<menuitem label="Ajouter un dossier" name="add"/>
 						<menuitem label="Ouvrir un fichier" name="open"/>
-						<menuitem label = "Creer une playlist"/>
+						<menuitem label = "Creer une playlist" name="add_playlist"/>
 						<menuitem label ="Importer une playlist"/>
 					</menuitem>
 					<menuitem label="test">
@@ -192,7 +186,7 @@
 					<s:HGroup id="EasySearch" width="100%" height="35%">
 						<s:DataGrid id="GenreTable" width="33%" height="100%" borderVisible="true"
 									color="#FFFFFF" contentBackgroundColor="#D2CACA"
-									dataProvider="{initGen}" requestedRowCount="4"
+									dataProvider="{Application.Instance.display.genreCollection}" requestedRowCount="4"
 									selectionColor="#656060">
 							<s:columns>
 								<s:ArrayList>
@@ -202,7 +196,7 @@
 							
 						</s:DataGrid>
 						<s:DataGrid id="ArtistTable" width="33%" height="100%"
-									contentBackgroundColor="#CEC6C6" dataProvider="{initArtist}"
+									contentBackgroundColor="#CEC6C6" dataProvider="{Application.Instance.display.artistCollection}"
 									requestedRowCount="4" selectionColor="#726C6C">
 							<s:columns>
 								<s:ArrayList>
@@ -212,7 +206,7 @@
 						</s:DataGrid>
 						<s:DataGrid id="AlbumTable" width="31%" height="100%" borderVisible="true"
 									chromeColor="#816A6A" contentBackgroundColor="#CEC7C7"
-									dataProvider="{initAlbum}" editable="true" requestedRowCount="4"
+									dataProvider="{Application.Instance.display.albumCollection}" editable="true" requestedRowCount="4"
 									selectionColor="#60635F">
 							<s:columns>
 								<s:ArrayList>
@@ -223,7 +217,7 @@
 					</s:HGroup>
 					<mx:DataGrid id="MusicTable" width="99%" height="65%" borderVisible="false"
 								 color="#000000" contentBackgroundColor="#D1C6C6"
-								 dataProvider="{init}" editable="false" selectionColor="#605B5B">
+								 dataProvider="{Application.Instance.display.musicCollection}" editable="false" selectionColor="#605B5B">
 						<mx:columns>
 							
 								<mx:DataGridColumn dataField="test" headerText=""  itemRenderer="mx.controls.CheckBox"/>

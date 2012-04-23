@@ -3,13 +3,22 @@ package
 	import DB.Database;
 	
 	import flash.net.dns.AAAARecord;
-
+	
+	import mx.collections.ArrayCollection;
 	public class Display
 	{
 		private var _albumTab:Array;
 		private var _artistTab:Array;
 		private var _genreTab:Array;
 		private var _musicTab:Array;
+		
+		private var _musicCollection:ArrayCollection;
+
+		private var _genreCollection: ArrayCollection;
+
+		private var _albumCollection:ArrayCollection;
+	
+		private var _artistCollection:ArrayCollection;
 		
 		public function Display()
 		{
@@ -18,6 +27,51 @@ package
 			albumTab = new Array ();
 			genreTab = new Array ();
 			
+		}
+
+		
+		[Bindable]
+		public function get artistCollection():ArrayCollection
+		{
+			return _artistCollection;
+		}
+
+		
+		public function set artistCollection(value:ArrayCollection):void
+		{
+			_artistCollection = value;
+		}
+		[Bindable]
+		public function get albumCollection():ArrayCollection
+		{
+			return _albumCollection;
+		}
+		
+		public function set albumCollection(value:ArrayCollection):void
+		{
+			_albumCollection = value;
+		}
+		
+		[Bindable]
+		public function get genreCollection():ArrayCollection
+		{
+			return _genreCollection;
+		}
+
+		public function set genreCollection(value:ArrayCollection):void
+		{
+			_genreCollection = value;
+		}
+
+		[Bindable]
+		public function get musicCollection():ArrayCollection
+		{
+			return _musicCollection;
+		}
+
+		public function set musicCollection(value:ArrayCollection):void
+		{
+			_musicCollection = value;
 		}
 
 		public function get musicTab():Array
@@ -64,6 +118,11 @@ package
 		{
 			for (var i:int = 0; i < array.length; i++)
 			{
+				if (array[i].TitleField === elt)
+				{
+					return true;
+				}
+				
 				if (array[i].ArtistBase === elt)
 				{
 					return true;
@@ -83,14 +142,28 @@ package
 			return false;
 		}
 		
+		public function search_m(array:Array, elt:*) : Boolean
+		{
+			for (var i:int = 0; i < array.length; i++)
+			{
+				if ((array[i].TitleField === elt.Title) && (array[i].ArtistField === elt.Artist) && (array[i].AlbumField === elt.Album))
+				{
+						return true;
+				}
+			}
+			return false;
+		}
+		
 		public function fill_tab(tab_m:Array) : void
 		{		
 			if (tab_m != null)
 			{
 				for each (var t:* in tab_m)
 				{
-					musicTab.push ({TitleField:t.Title, ArtistField:t.Artist, AlbumField:t.Album, GenreField:t.Genre, LengthField:Tool.lengthtoString(t.Length)});
-					
+					if (search_m(musicTab, t) == false)
+					{
+						musicTab.push ({TitleField:t.Title, ArtistField:t.Artist, AlbumField:t.Album, GenreField:t.Genre, LengthField:Tool.lengthtoString(t.Length)});
+					}			
 					if (search(artistTab, t.Artist) == false)
 					{
 						artistTab.push({ArtistBase:t.Artist});
@@ -106,7 +179,40 @@ package
 				}
 					
 			}
+			
+			musicCollection = new ArrayCollection (_musicTab);
+			artistCollection = new ArrayCollection (_artistTab);
+			albumCollection = new ArrayCollection (_albumTab);
+			genreCollection = new ArrayCollection (_genreTab);
 		
+		}
+	
+		public function update (tab_m:Array) : void
+		{
+			if (tab_m != null)
+			{
+				for each (var t:* in tab_m)
+				{
+					if (search(musicTab, t.Title) == false)
+					{
+						musicTab.push ({TitleField:t.Title, ArtistField:t.Artist, AlbumField:t.Album, GenreField:t.Genre, LengthField:Tool.lengthtoString(t.Length)});
+					}
+					if (search(artistTab, t.Artist) == false)
+					{
+						artistTab.push({ArtistBase:t.Artist});
+					}
+					if (search(genreTab, t.Genre) == false)
+					{
+						genreTab.push({GenreBase:t.Genre});
+					}
+					if (search(albumTab, t.Album) == false)
+					{
+						albumTab.push({AlbumBase:t.Album});
+					}
+				}
+				
+				
+			}
 		}
 	}
 }
