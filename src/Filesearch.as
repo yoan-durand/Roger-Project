@@ -31,7 +31,6 @@ package
 			}
 			return false;
 		}
-		
 		protected function loadingfilesHandler (event:Event) : void
 		{
 			var head:File = event.target as File;
