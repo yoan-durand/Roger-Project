@@ -16,15 +16,25 @@
 			import DB.Database;
 			import BO.Music;
 			
+			import com.adobe.serializers.json.JSONDecoder;
+			
 			import mx.collections.ArrayCollection;
 			import mx.controls.Alert;
 			import mx.controls.Menu;
 			import mx.controls.sliderClasses.Slider;
 			import mx.core.UIComponent;
+			import mx.events.FlexEvent;
 			import mx.events.FlexNativeWindowBoundsEvent;
 			import mx.events.ListEvent;
 			import mx.events.MenuEvent;
 			import mx.events.SliderEvent;
+
+			import mx.rpc.AsyncResponder;
+			import mx.rpc.AsyncToken;
+			import mx.rpc.CallResponder;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			import mx.rpc.http.HTTPService;
 			
 			import spark.events.GridSelectionEvent;
 			
@@ -65,6 +75,46 @@
 				{
 					add_playlist();
 				}
+		
+				if (event.item.@name == "music")
+				{
+					var api_key:String = "5TTVQT9W99PC1OSRZ";
+					var artist:String = "Children of bodom";
+					var title:String = "children of bodom";
+					var format:String = "json";
+					var bucket:String = "tracks";
+					
+					var http:HTTPService = new HTTPService();
+					
+					// specify the url to request, the method and result format
+					http.url = "http://developer.echonest.com/api/v4/song/search?api_key=5TTVQT9W99PC1OSRZ&artist=Children of bodom&title=Children of bodom&format=json&bucket=id:7digital-US&bucket=audio_summary&bucket=tracks";
+					http.method = "GET";
+					http.resultFormat = "array";
+					
+					// call the HTTP Service's send() to invoke the request, a token is returned
+					var token:AsyncToken = http.send();
+					
+					// setup responder (resultHandler and faultHandler functions) and add to token
+					var responder:AsyncResponder = new AsyncResponder( resultHandler, faultHandler );
+					token.addResponder( responder );
+				}
+			}
+			
+			public function resultHandler(event:ResultEvent, token:Object):void
+			{
+				if (event.result != null)
+				{
+					var res:String = event.result[0].toString();
+					var decod:JSONDecoder = new JSONDecoder;
+					var obj:Object = decod.decode(res);
+					var id_echonest:String = obj.response._item.songs.source[0].id;
+					var path_cover:String = obj.response._item.songs.source[0].tracks[0].release_image;
+				}
+			}
+			
+			public function faultHandler(event:FaultEvent):void
+			{
+				event;
 			}
 			
 			public function add_playlist () : void
@@ -186,7 +236,6 @@
 				Application.Instance.display.musicCollection.removeAll();
 				Application.Instance.display.albumCollection.removeAll();			
 			}
-			
 			
 		]]>
 	</fx:Script>
