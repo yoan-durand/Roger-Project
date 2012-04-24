@@ -206,6 +206,7 @@ package
 		
 		public function add_music (music:Music):void
 		{
+
 			display_add_music (music);
 			_music_list.push(music);
 		}
@@ -221,14 +222,15 @@ package
 			group.percentHeight = 100;
 			group.percentWidth = 100;
 			
+			
 			var image:Image = new Image ();
-			image.source = "http://f4.img.v4.skyrock.net/f4c/marlene-33/pics/2452333953_1.jpg";
+			image.source = "http://blog.dynatrace.com/wp-content/PerformanceReportSpeedUpLoadTime.png";
 			image.percentHeight = 80;
 			image.percentWidth = 100;
 			group.addElement(image);
 			
 			var label:Label = new Label ();
-			label.text = "Nom de l'artiste";
+			label.text = music.Title;
 			label.percentWidth = 100;
 			group.addElement (label);
 			
