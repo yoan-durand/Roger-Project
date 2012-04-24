@@ -94,10 +94,10 @@ package
 			trace("Music end");
 		}
 		
-		public function test():void
+		public function test(path:String):void
 		{
 			var mymusic:Music = new Music ();
-			mymusic.Path = "file:///C:/Users/Vince/Music/Almost king/ALMOST KINGS-Goin Big.mp3";
+			mymusic.Path = path;
 			_music_list.push(mymusic);
 			var mymusic2:Music = new Music ();
 			mymusic2.Path = "file:///C:/Users/Vince/Music/Almost king/ALMOST KINGS-Legend.mp3";
