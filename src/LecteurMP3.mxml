@@ -308,7 +308,7 @@
 						</mx:DataGrid>
 					</s:HGroup>
 					<mx:DataGrid id="MusicTable" width="99%" height="65%" borderVisible="false"
-								 color="#000000" contentBackgroundColor="#D1C6C6"
+								 color="#FFFFFF" contentBackgroundColor="#D1C6C6"
 								 dataProvider="{Application.Instance.display.musicCollection}" editable="false" selectionColor="#605B5B"
 								 doubleClickEnabled="true" itemDoubleClick="refererRowDoubleClicked(event)">
 						<mx:columns>
@@ -345,7 +345,7 @@
 						  click="forwind_clickHandler(event)"/>
 				<s:HSlider id="SpeekerLevel" width="71" change="SpeekerLevel_changeHandler(event)"
 						   maximum="1" minimum="0" snapInterval="0.01" value="1"/>
-				<s:HSlider id="progressBar" width="349" change="progressBar_changeHandler(event)"
+				<s:HSlider id="progressBar" width="90%" change="progressBar_changeHandler(event)"
 						   maximum="100" minimum="0" skinClass="spark.skins.spark.HSliderSkin"
 						   stepSize="0.05"/>
 				
@@ -357,9 +357,9 @@
 								mode="manual"
 								maximum="100" minimum="0"/>-->
 				
-				<s:ToggleButton id="ShuffleButton" width="15%" height="100%" label="Shuffle"
+				<s:ToggleButton id="ShuffleButton" width="10%" height="100%" label="Shuffle"
 								click="ShuffleButton_clickHandler(event)"/>
-				<s:ToggleButton id="RepeatButton" width="15%" height="100%" label="Repeat"
+				<s:ToggleButton id="RepeatButton" width="10%" height="100%" label="Repeat"
 								click="RepeatButton_clickHandler(event)"/>
 			</s:HGroup>
 		</s:VGroup>
