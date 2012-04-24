@@ -30,6 +30,9 @@ package
 			genreTab = new Array ();
 			playlist = new Array ();
 			
+			artistTab.push({ArtistBase:"Tout"});
+			albumTab.push({AlbumBase:"Tout"});
+			genreTab.push({GenreBase:"Tout"});
 		}
 
 		public function get playlist():Array
@@ -196,7 +199,8 @@ package
 				{
 					if (search_m(musicTab, t) == false)
 					{
-						musicTab.push ({TitleField:t.Title, ArtistField:t.Artist, AlbumField:t.Album, GenreField:t.Genre, LengthField:Tool.lengthtoString(t.Length), Path:t.Path, ID:t.ID_Music});
+						musicTab.push ({TitleField:t.Title, ArtistField:t.Artist, AlbumField:t.Album, GenreField:t.Genre, LengthField:Tool.lengthtoString(t.Length),
+							Path:t.Path, ID:t.ID_Music});
 					}			
 					if (search(artistTab, t.Artist) == false)
 					{
@@ -228,7 +232,7 @@ package
 				{
 					if (search(musicTab, t) == false)
 					{
-						musicTab.push ({TitleField:t.Title, ArtistField:t.Artist, AlbumField:t.Album, GenreField:t.Genre, LengthField:Tool.lengthtoString(t.Length)});
+						musicTab.push ({TitleField:t.Title, ArtistField:t.Artist, AlbumField:t.Album, GenreField:t.Genre, LengthField:Tool.lengthtoString(t.Length), Path:t.Path, ID:t.ID_Music});
 					}
 					if (search(artistTab, t.Artist) == false)
 					{
@@ -252,5 +256,6 @@ package
 			albumCollection = new ArrayCollection (_albumTab);
 			genreCollection = new ArrayCollection (_genreTab);
 		}
+		
 	}
 }

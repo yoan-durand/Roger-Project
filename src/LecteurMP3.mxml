@@ -13,7 +13,22 @@
 	
 	<fx:Script>
 		<![CDATA[
+			protected function PlaylistTab_itemClickHandler(event:ListEvent):void
+			{
+				// TODO Auto-generated method stub
+				
+			}
+		]]>
+	</fx:Script>
+	
+	
+	<fx:Script>
+		<![CDATA[
+			import BO.Music;
+			
 			import DB.Database;
+			
+			import com.adobe.serializers.json.JSONDecoder;
 			
 			import mx.collections.ArrayCollection;
 			import mx.controls.Alert;
@@ -28,6 +43,7 @@
 			import mx.rpc.AsyncResponder;
 			import mx.rpc.AsyncToken;
 			import mx.rpc.CallResponder;
+			import mx.rpc.events.FaultEvent;
 			import mx.rpc.events.ResultEvent;
 			import mx.rpc.http.HTTPService;
 			
@@ -75,23 +91,20 @@
 				if (event.item.@name == "music")
 				{
 					var api_key:String = "5TTVQT9W99PC1OSRZ";
-					var artist:String = "Amon amarth";
-					var title:String = "asator";
+					var artist:String = "Children of bodom";
+					var title:String = "children of bodom";
 					var format:String = "json";
-					var bucket1:String = "id:7digital-US";
-					var bucket2:String = "audio_summary";
-					var bucket3:String = "tracks";
+					var bucket:String = "tracks";
 					
 					var http:HTTPService = new HTTPService();
 					
 					// specify the url to request, the method and result format
-					http.url = "http://developer.echonest.com/api/v4/song/search";
+					http.url = "http://developer.echonest.com/api/v4/song/search?api_key=5TTVQT9W99PC1OSRZ&artist=Children of bodom&title=Children of bodom&format=json&bucket=id:7digital-US&bucket=audio_summary&bucket=tracks";
 					http.method = "GET";
 					http.resultFormat = "array";
-					var params:Object = { "api_key": api_key, "artist": artist, "title" : title, "format" : format, "bucket" : bucket1, "bucket" : bucket2, "bucket" : bucket3 };
 					
 					// call the HTTP Service's send() to invoke the request, a token is returned
-					var token:AsyncToken = http.send( params );
+					var token:AsyncToken = http.send();
 					
 					// setup responder (resultHandler and faultHandler functions) and add to token
 					var responder:AsyncResponder = new AsyncResponder( resultHandler, faultHandler );
@@ -99,14 +112,21 @@
 				}
 			}
 			
-			public function resultHandler(result:Object):void
+			public function resultHandler(event:ResultEvent, token:Object):void
 			{
-				result;
+				if (event.result != null)
+				{
+					var res:String = event.result[0].toString();
+					var decod:JSONDecoder = new JSONDecoder;
+					var obj:Object = decod.decode(res);
+					var id_echonest:String = obj.response._item.songs.source[0].id;
+					var path_cover:String = obj.response._item.songs.source[0].tracks[0].release_image;
+				}
 			}
 			
-			public function faultHandler(result:Object):void
+			public function faultHandler(event:FaultEvent):void
 			{
-				result;
+				event;
 			}
 			
 			public function add_playlist () : void
@@ -178,11 +198,6 @@
 					
 			}
 			
-			protected function MusicTable_selectionChangeHandler(event:GridSelectionEvent):void
-			{
-				// TODO Auto-generated method stub
-				
-			}
 			
 			protected function progressBar_changeHandler(event:Event):void
 			{
@@ -191,16 +206,65 @@
 				appli._player.change_position(event.currentTarget.value);
 				
 			}
-			
-			protected function refererRowDoubleClicked(e:ListEvent):void { 
-				Alert.show(e.itemRenderer.data.Path);
+			protected function refererRowDoubleClicked(e:ListEvent):void 
+			{
+				var music:Music = new Music;
+				music.Artist = e.itemRenderer.data.ArtistField;
+				music.Album = e.itemRenderer.data.AlbumField;
+				music.Genre = e.itemRenderer.data.GenreField;
+				music.ID_Music = e.itemRenderer.data.ID;
+				music.Path = e.itemRenderer.data.Path;
 				
-				Application.Instance._player.test(e.itemRenderer.data.Path);
+				Application.Instance._player.music_list.push(music);
 			}
 			
-			protected function getechonestresult_resultHandler(event:ResultEvent):void
+			
+			protected function GenreTable_itemClickHandler(event:ListEvent):void
 			{
-				event.result;
+				Application.Instance.display.musicCollection.removeAll();
+				Application.Instance.display.artistCollection.removeAll();
+				Application.Instance.display.albumCollection.removeAll();
+				
+				Application.Instance.display.artistTab.push({ArtistBase:"Tout"});
+				Application.Instance.display.albumTab.push({AlbumBase:"Tout"});
+				if (event.itemRenderer.data.GenreBase != "Tout")
+				{
+					Application.Instance.display.update(DB.Database.list_query("select * from Music where Music.genre = \""+event.itemRenderer.data.GenreBase+"\""));
+				}
+				else
+				{
+					Application.Instance.display.update(Application.Instance.list_music);
+				}
+			}
+			
+			protected function ArtistTable_itemClickHandler(event:ListEvent):void
+			{
+				Application.Instance.display.musicCollection.removeAll();
+				Application.Instance.display.albumCollection.removeAll();			
+				
+				Application.Instance.display.albumTab.push({AlbumBase:"Tout"});
+				if (event.itemRenderer.data.ArtistBase != "Tout")
+				{
+					Application.Instance.display.update(DB.Database.list_query("select * from Music where Music.artist = \""+event.itemRenderer.data.ArtistBase+"\""));
+				}
+				else
+				{
+					Application.Instance.display.update(DB.Database.list_query("select * from Music"));
+				}
+			}
+			
+			protected function AlbumTable_itemClickHandler(event:ListEvent):void
+			{
+				Application.Instance.display.musicCollection.removeAll();
+				
+				if (event.itemRenderer.data.AlbumBase != "Tout")
+				{
+					Application.Instance.display.update(DB.Database.list_query("select * from Music where Music.album = \""+event.itemRenderer.data.AlbumBase+"\""));
+				}
+				else
+				{
+					Application.Instance.display.update(Application.Instance.list_music);
+				}
 			}
 			
 		]]>
@@ -228,15 +292,13 @@
 		</s:HGroup>
 		<s:HGroup width="100%" height="85%">
 			<s:VGroup id="InfoPlaylistGroup" width="30%" height="100%">
-				<s:DataGrid id="PlaylistTab" width="100%" height="50%"
-							dataProvider="{Application.Instance.display.playCollection}"
-							requestedRowCount="4">
-					<s:columns>
-						<s:ArrayList>
-							<s:GridColumn dataField="PlaylistField" headerText="Playlist"></s:GridColumn>
-						</s:ArrayList>
-					</s:columns>
-				</s:DataGrid>
+				<mx:DataGrid id="PlaylistTab" width="100%" height="50%"
+							 itemClick="PlaylistTab_itemClickHandler(event)"
+							dataProvider="{Application.Instance.display.playCollection}">
+					<mx:columns>
+							<mx:DataGridColumn dataField="PlaylistField" headerText="Playlist"/>
+					</mx:columns>
+				</mx:DataGrid>
 				<s:SWFLoader id="Econest_Image" width="100%" height="40%"/>
 				<s:Label id="Name" fontFamily="Times New Roman" fontSize="22" text="Name"/>
 				<s:Label id="ArtisteDisplay" text="Artiste"/>
@@ -245,39 +307,41 @@
 			<s:Scroller width="70%" height="100%">
 				<s:VGroup id="MusicGroup" width="100%" height="100%">
 					<s:HGroup id="EasySearch" width="100%" height="35%">
-						<s:DataGrid id="GenreTable" width="33%" height="100%" borderVisible="true"
+						<mx:DataGrid id="GenreTable" width="33%" height="100%" borderVisible="true"
 									color="#FFFFFF" contentBackgroundColor="#D2CACA"
-									dataProvider="{Application.Instance.display.genreCollection}" requestedRowCount="4"
+									dataProvider="{Application.Instance.display.genreCollection}"
+									itemClick="GenreTable_itemClickHandler(event)"
 									selectionColor="#656060">
-							<s:columns>
-								<s:ArrayList>
-									<s:GridColumn dataField="GenreBase" headerText="Genre"></s:GridColumn>
-								</s:ArrayList>
-							</s:columns>
+							<mx:columns>
+									<mx:DataGridColumn dataField="GenreBase" headerText="Genre"/>	
+							</mx:columns>
 							
-						</s:DataGrid>
-						<s:DataGrid id="ArtistTable" width="33%" height="100%"
-									contentBackgroundColor="#CEC6C6" dataProvider="{Application.Instance.display.artistCollection}"
-									requestedRowCount="4" selectionColor="#726C6C">
-							<s:columns>
-								<s:ArrayList>
-									<s:GridColumn dataField="ArtistBase" headerText="Artiste"></s:GridColumn>
-							    </s:ArrayList>
-							</s:columns>
-						</s:DataGrid>
-						<s:DataGrid id="AlbumTable" width="31%" height="100%" borderVisible="true"
+						</mx:DataGrid>
+						<mx:DataGrid id="ArtistTable" width="33%" height="100%"
+									contentBackgroundColor="#CEC6C6"
+									dataProvider="{Application.Instance.display.artistCollection}"
+									itemClick="ArtistTable_itemClickHandler(event)"
+									selectionColor="#726C6C">
+							<mx:columns>
+								
+									<mx:DataGridColumn dataField="ArtistBase" headerText="Artiste"/>
+							  
+							</mx:columns>
+						</mx:DataGrid>
+						<mx:DataGrid id="AlbumTable" width="31%" height="100%" borderVisible="true"
 									chromeColor="#816A6A" contentBackgroundColor="#CEC7C7"
-									dataProvider="{Application.Instance.display.albumCollection}" editable="true" requestedRowCount="4"
+									dataProvider="{Application.Instance.display.albumCollection}"
+									itemClick="AlbumTable_itemClickHandler(event)"
 									selectionColor="#60635F">
-							<s:columns>
-								<s:ArrayList>
-									<s:GridColumn dataField="AlbumBase" headerText="Album"></s:GridColumn>
-								</s:ArrayList>
-							</s:columns>
-						</s:DataGrid>
+							<mx:columns>
+								
+									<mx:DataGridColumn dataField="AlbumBase" headerText="Album"/>
+								
+							</mx:columns>
+						</mx:DataGrid>
 					</s:HGroup>
 					<mx:DataGrid id="MusicTable" width="99%" height="65%" borderVisible="false"
-								 color="#000000" contentBackgroundColor="#D1C6C6"
+								 color="#FFFFFF" contentBackgroundColor="#D1C6C6"
 								 dataProvider="{Application.Instance.display.musicCollection}" editable="false" selectionColor="#605B5B"
 								 doubleClickEnabled="true" itemDoubleClick="refererRowDoubleClicked(event)">
 						<mx:columns>
@@ -300,17 +364,17 @@
 				<s:HScrollBar width="100%"/>
 			</s:VGroup>
 			<s:HGroup id="PlayElement" width="100%" height="11%" verticalAlign="middle">
-				<s:Button id="Rewind" y="20" width="15%" height="100%" label="Rewind"
+				<s:Button id="Rewind" y="20" width="10%" height="100%" label="Rewind"
 						  click="Rewind_clickHandler(event)"/>
-				<s:Button id="Play" y="20" width="15%" height="100%" label="Play"
+				<s:Button id="Play" y="20" width="10%" height="100%" label="Play"
 						  click="Play_clickHandler(event)"/>
-				<s:Button id="Stop" y="21" width="15%" height="100%" label="Stop"
+				<s:Button id="Stop" y="21" width="10%" height="100%" label="Stop"
 						  click="Stop_clickHandler(event)"/>
-				<s:Button id="forwind" y="19" width="15%" height="100%" label="Forwind"
+				<s:Button id="forwind" y="19" width="10%" height="100%" label="Forwind"
 						  click="forwind_clickHandler(event)"/>
 				<s:HSlider id="SpeekerLevel" width="71" change="SpeekerLevel_changeHandler(event)"
 						   maximum="1" minimum="0" snapInterval="0.01" value="1"/>
-				<s:HSlider id="progressBar" width="349" change="progressBar_changeHandler(event)"
+				<s:HSlider id="progressBar" width="90%" change="progressBar_changeHandler(event)"
 						   maximum="100" minimum="0" skinClass="spark.skins.spark.HSliderSkin"
 						   stepSize="0.05"/>
 				
@@ -322,9 +386,9 @@
 								mode="manual"
 								maximum="100" minimum="0"/>-->
 				
-				<s:ToggleButton id="ShuffleButton" width="15%" height="100%" label="Shuffle"
+				<s:ToggleButton id="ShuffleButton" width="10%" height="100%" label="Shuffle"
 								click="ShuffleButton_clickHandler(event)"/>
-				<s:ToggleButton id="RepeatButton" width="15%" height="100%" label="Repeat"
+				<s:ToggleButton id="RepeatButton" width="10%" height="100%" label="Repeat"
 								click="RepeatButton_clickHandler(event)"/>
 			</s:HGroup>
 		</s:VGroup>
