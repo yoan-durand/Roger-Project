@@ -110,6 +110,7 @@ package
 				var query_result:SQLResult = Database.exec_query(null, insert_music);
 				if (query_result != null)
 				{
+					music.request();
 					music.ID_Music = query_result.lastInsertRowID;
 					Application.Instance.list_music.push(music);
 					Application.Instance.display.fill_tab(Application.Instance.list_music);

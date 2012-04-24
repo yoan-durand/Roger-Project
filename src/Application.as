@@ -68,12 +68,13 @@ package
 			var music_table:String = "CREATE TABLE IF NOT EXISTS Music (";
 			music_table += "ID_Music INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, ";
 			music_table += "Path NVARCHAR(255) UNIQUE NOT NULL, ";
-			music_table += "ID_Echonest INTEGER UNIQUE NULL, ";
+			music_table += "ID_Echonest NVARCHAR(255) UNIQUE NULL, ";
 			music_table += "Album NVARCHAR(255) NULL, ";
 			music_table += "Artist NVARCHAR(255) NULL, ";
 			music_table += "Length INTEGER NULL, ";
 			music_table += "Title NVARCHAR(255) NULL, ";
-			music_table += "Genre NVARCHAR(255) NULL ";
+			music_table += "Genre NVARCHAR(255) NULL, ";
+			music_table += "Path_Cover NVARCHAR(255) NULL ";
 			music_table += ")";
 			
 			Database.exec_query(music_table, null);
