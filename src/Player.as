@@ -11,6 +11,7 @@ package
 	import flash.media.SoundTransform;
 	import flash.net.URLRequest;
 	import flash.utils.Timer;
+	import spark.components.BorderContainer 
 	
 	import flashx.textLayout.formats.Float;
 	
@@ -51,11 +52,17 @@ package
 				soundLoaderContext.checkPolicyFile = true;
 				
 				var mp3:URLRequest = new URLRequest(music_data.Path);
-				var sound:Sound = new Sound();
-				sound.load(mp3,soundLoaderContext);
-				_music_sound = sound;
-				_music_sound.addEventListener(Event.COMPLETE, load_complete);
-				
+				try
+				{
+					var sound:Sound = new Sound();
+					sound.load(mp3,soundLoaderContext);
+					_music_sound = sound;
+					_music_sound.addEventListener(Event.COMPLETE, load_complete);
+				} 
+				catch(error:Error) 
+				{
+					trace ("loading fail");
+				}
 			}
 		}
 		
@@ -64,8 +71,7 @@ package
 			play ();
 		}
 		
-		
-		private function positionTimerHandler (event:Event)
+		private function positionTimerHandler (event:Event):void
 		{
 		/*	event.target.value;*/
 			
@@ -89,7 +95,7 @@ package
 			_music_sound = null;
 			positionTimer.stop();
 			FlexGlobals.topLevelApplication.progressBar.value = 0;
-			_index++;
+			update_index (1);
 			play ();
 			trace("Music end");
 		}
@@ -98,7 +104,7 @@ package
 		{
 			var mymusic:Music = new Music ();
 			mymusic.Path = path;
-			_music_list.push(mymusic);
+			//_music_list.push(mymusic);
 			var mymusic2:Music = new Music ();
 			mymusic2.Path = "file:///C:/Users/Vince/Music/Almost king/ALMOST KINGS-Legend.mp3";
 			_music_list.push(mymusic2);
@@ -206,6 +212,14 @@ package
 					_index = index_updated;
 				}
 			}
+			display_add_music ();
+		}
+		
+		/* DISPLAY */
+		public function display_add_music ():void
+		{
+			var container:BorderContainer = new BorderContainer();
+			FlexGlobals.topLevelApplication.current_playlist.addElement(container);
 		}
 	}
 }
