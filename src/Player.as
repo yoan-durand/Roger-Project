@@ -102,7 +102,7 @@ package
 		
 		public function test(path:String):void
 		{
-			var mymusic:Music = new Music ();
+		/*	var mymusic:Music = new Music ();
 			mymusic.Path = path;
 			//_music_list.push(mymusic);
 			var mymusic2:Music = new Music ();
@@ -111,7 +111,7 @@ package
 			var mymusic3:Music = new Music ();
 			mymusic3.Path = "file:///C:/Users/Vince/Music/Almost king/ALMOST KINGS-Unstoppable.mp3";
 			_music_list.push(mymusic3);
-			play ();
+			play ();*/
 		}
 		
 		public function change_position (position:Number):void
