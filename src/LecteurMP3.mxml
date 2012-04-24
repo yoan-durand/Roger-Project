@@ -47,7 +47,7 @@
 			{
 				var player:Player = new Player ();
 				var appli:Application = Application.Instance;
-				appli._player.test("");
+				appli._player.play();
 			}
 			
 			protected function Stop_clickHandler(event:MouseEvent):void
@@ -209,7 +209,7 @@
 				music.ID_Music = e.itemRenderer.data.ID;
 				music.Path = e.itemRenderer.data.Path;
 				
-				Application.Instance._player.music_list.push(music);
+				Application.Instance._player.add_music(music);
 			}
 			
 			
@@ -231,10 +231,35 @@
 				}
 			}
 			
+				
 			protected function ArtistTable_itemClickHandler(event:ListEvent):void
 			{
 				Application.Instance.display.musicCollection.removeAll();
 				Application.Instance.display.albumCollection.removeAll();			
+				
+				Application.Instance.display.albumTab.push({AlbumBase:"Tout"});
+				if (event.itemRenderer.data.ArtistBase != "Tout")
+				{
+					Application.Instance.display.update(DB.Database.list_query("select * from Music where Music.artist = \""+event.itemRenderer.data.ArtistBase+"\""));
+				}
+				else
+				{
+					Application.Instance.display.update(DB.Database.list_query("select * from Music"));
+				}
+			}
+			
+			protected function AlbumTable_itemClickHandler(event:ListEvent):void
+			{
+				Application.Instance.display.musicCollection.removeAll();
+				
+				if (event.itemRenderer.data.AlbumBase != "Tout")
+				{
+					Application.Instance.display.update(DB.Database.list_query("select * from Music where Music.album = \""+event.itemRenderer.data.AlbumBase+"\""));
+				}
+				else
+				{
+					Application.Instance.display.update(Application.Instance.list_music);
+				}
 			}
 			
 		]]>
@@ -329,14 +354,18 @@
 			</s:Scroller>
 		</s:HGroup>
 		<s:VGroup width="100%" height="174">
-			<s:HGroup id="current_playlist" width="100%" height="70%" color="#180B0B">
-				<s:VGroup width="15%" height="100%" color="#0D0C0C">
-					<s:Image width="100%" height="80%"
-							 source="assets/neon-wallpaper-blue-puddel_1920x1200_94657.jpg"/>
-					<s:Label width="100%" text="titre et artiste" textAlign="center"/>
-				</s:VGroup>
+			<s:Scroller width="100%" height="135">
+			<s:HGroup id="current_playlist" width="100%" height="70%" color="#180B0B" clipAndEnableScrolling="true">
+				<s:BorderContainer width="144" height="120">
+					<s:VGroup x="0" y="0" width="100%" height="100%" color="#0D0C0C">
+						<s:Image width="100%" height="80%"
+								 source="assets/neon-wallpaper-blue-puddel_1920x1200_94657.jpg"/>
+						<s:Label width="100%" text="titre et artiste" textAlign="center"/>
+					</s:VGroup>
+				</s:BorderContainer>
 			</s:HGroup>
-			<s:HScrollBar viewport="{current_playlist}" width="100%"/>
+			</s:Scroller> 
+			<!-- <s:HScrollBar viewport="{current_playlist}" width="100%" /> -->
 			<s:HGroup id="PlayElement" width="100%" height="11%" verticalAlign="middle">
 				<s:Button id="Rewind" y="20" width="15%" height="100%" label="Rewind"
 						  click="Rewind_clickHandler(event)"/>

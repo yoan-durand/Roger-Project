@@ -11,11 +11,15 @@ package
 	import flash.media.SoundTransform;
 	import flash.net.URLRequest;
 	import flash.utils.Timer;
-	import spark.components.BorderContainer 
 	
 	import flashx.textLayout.formats.Float;
 	
+	import mx.controls.Image;
+	import mx.controls.Label;
 	import mx.core.FlexGlobals;
+	
+	import spark.components.BorderContainer;
+	import spark.components.VGroup;
 
 	public class Player
 	{
@@ -98,20 +102,6 @@ package
 			update_index (1);
 			play ();
 			trace("Music end");
-		}
-		
-		public function test(path:String):void
-		{
-		/*	var mymusic:Music = new Music ();
-			mymusic.Path = path;
-			//_music_list.push(mymusic);
-			var mymusic2:Music = new Music ();
-			mymusic2.Path = "file:///C:/Users/Vince/Music/Almost king/ALMOST KINGS-Legend.mp3";
-			_music_list.push(mymusic2);
-			var mymusic3:Music = new Music ();
-			mymusic3.Path = "file:///C:/Users/Vince/Music/Almost king/ALMOST KINGS-Unstoppable.mp3";
-			_music_list.push(mymusic3);
-			play ();*/
 		}
 		
 		public function change_position (position:Number):void
@@ -212,13 +202,38 @@ package
 					_index = index_updated;
 				}
 			}
-			display_add_music ();
+		}
+		
+		public function add_music (music:Music):void
+		{
+			display_add_music (music);
+			_music_list.push(music);
 		}
 		
 		/* DISPLAY */
-		public function display_add_music ():void
+		private function display_add_music (music:Music):void
 		{
 			var container:BorderContainer = new BorderContainer();
+			container.width = 144;
+			container.height = 120;
+			
+			var group:VGroup = new VGroup();
+			group.percentHeight = 100;
+			group.percentWidth = 100;
+			
+			var image:Image = new Image ();
+			image.source = "http://f4.img.v4.skyrock.net/f4c/marlene-33/pics/2452333953_1.jpg";
+			image.percentHeight = 80;
+			image.percentWidth = 100;
+			group.addElement(image);
+			
+			var label:Label = new Label ();
+			label.text = "Nom de l'artiste";
+			label.percentWidth = 100;
+			group.addElement (label);
+			
+			container.addElement(group);
+			
 			FlexGlobals.topLevelApplication.current_playlist.addElement(container);
 		}
 	}
