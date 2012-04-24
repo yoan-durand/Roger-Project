@@ -172,7 +172,66 @@
 				appli._player.change_position(event.currentTarget.value);
 				
 			}
+			protected function refererRowDoubleClicked(e:ListEvent):void 
+			{
+				var music:Music = new Music;
+				music.Artist = e.itemRenderer.data.ArtistField;
+				music.Album = e.itemRenderer.data.AlbumField;
+				music.Genre = e.itemRenderer.data.GenreField;
+				music.ID_Music = e.itemRenderer.data.ID;
+				music.Path = e.itemRenderer.data.Path;
+				
+				Application.Instance._player.music_list.push(music);
+			}
 			
+			
+			protected function GenreTable_itemClickHandler(event:ListEvent):void
+			{
+				Application.Instance.display.musicCollection.removeAll();
+				Application.Instance.display.artistCollection.removeAll();
+				Application.Instance.display.albumCollection.removeAll();
+				
+				Application.Instance.display.artistTab.push({ArtistBase:"Tout"});
+				Application.Instance.display.albumTab.push({AlbumBase:"Tout"});
+				if (event.itemRenderer.data.GenreBase != "Tout")
+				{
+					Application.Instance.display.update(DB.Database.list_query("select * from Music where Music.genre = \""+event.itemRenderer.data.GenreBase+"\""));
+				}
+				else
+				{
+					Application.Instance.display.update(Application.Instance.list_music);
+				}
+			}
+			
+			protected function ArtistTable_itemClickHandler(event:ListEvent):void
+			{
+				Application.Instance.display.musicCollection.removeAll();
+				Application.Instance.display.albumCollection.removeAll();			
+				
+				Application.Instance.display.albumTab.push({AlbumBase:"Tout"});
+				if (event.itemRenderer.data.ArtistBase != "Tout")
+				{
+					Application.Instance.display.update(DB.Database.list_query("select * from Music where Music.artist = \""+event.itemRenderer.data.ArtistBase+"\""));
+				}
+				else
+				{
+					Application.Instance.display.update(DB.Database.list_query("select * from Music"));
+				}
+			}
+			
+			protected function AlbumTable_itemClickHandler(event:ListEvent):void
+			{
+				Application.Instance.display.musicCollection.removeAll();
+				
+				if (event.itemRenderer.data.AlbumBase != "Tout")
+				{
+					Application.Instance.display.update(DB.Database.list_query("select * from Music where Music.album = \""+event.itemRenderer.data.AlbumBase+"\""));
+				}
+				else
+				{
+					Application.Instance.display.update(Application.Instance.list_music);
+				}
+			}
 			
 			
 		]]>
