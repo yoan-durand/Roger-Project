@@ -13,23 +13,13 @@
 	
 	<fx:Script>
 		<![CDATA[
-			protected function PlaylistTab_itemClickHandler(event:ListEvent):void
-			{
-				// TODO Auto-generated method stub
-				
-			}
-		]]>
-	</fx:Script>
-	
-	
-	<fx:Script>
-		<![CDATA[
 			import BO.Music;
 			
 			import DB.Database;
 			
 			import mx.collections.ArrayCollection;
 			import mx.controls.Alert;
+			import mx.controls.FlexNativeMenu;
 			import mx.controls.Menu;
 			import mx.controls.sliderClasses.Slider;
 			import mx.core.UIComponent;
@@ -39,11 +29,12 @@
 			import mx.events.SliderEvent;
 			import mx.rpc.AsyncToken;
 			import mx.rpc.CallResponder;
+			import mx.utils.ArrayUtil;
 			
 			import services.echonest.Echonest;
 			
 			import spark.events.GridSelectionEvent;
-
+			import mx.controls.FlexNativeMenu;
 			
 			protected function init_application ():void
 			{
@@ -233,7 +224,42 @@
 				}
 			}
 			
+			protected function PlaylistTab_itemClickHandler(event:ListEvent):void
+			{
+				var musiclist : Array = new Array;
 			
+				Application.Instance.display.musicCollection.removeAll();
+				
+				for each (var play:* in Application.Instance.list_playlist)
+				{
+					if (play.Name === event.itemRenderer.data.PlaylistField)
+					{
+						
+						Application.Instance.display.update(play.Musics);
+						for (var i : int = 0; i < play.Musics.length; i++)
+						{
+							var music:Music = new Music;
+							
+							music.Album = play.Musics[i].Album;
+							music.Artist = play.Musics[i].Artist;
+							music.Genre = play.Musics[i].Genre;
+							music.ID_Echonest = play.Musics[i].ID_Echonest;
+							music.ID_Music = play.Musics[i].ID_Music;
+							music.Length = play.Musics[i].Length;
+							music.Path = play.Musics[i].Path;
+							music.Title = play.Musics[i].Title;
+							
+							Application.Instance._player.music_list.push(music);
+						}						
+					}
+				}
+			}
+			
+			
+			protected function MusicTable_rightClickHandler(event:MouseEvent):void
+			{
+				
+			}
 		]]>
 	</fx:Script>
 	
@@ -258,20 +284,16 @@
 			</mx:MenuBar>
 		</s:HGroup>
 		<s:HGroup width="100%" height="85%">
-			<s:VGroup id="InfoPlaylistGroup" width="30%" height="100%">
-				<mx:DataGrid id="PlaylistTab" width="100%" height="50%"
+			<s:VGroup id="InfoPlaylistGroup" width="20%" height="100%">
+				<mx:DataGrid id="PlaylistTab" width="100%" height="100%"
 							 itemClick="PlaylistTab_itemClickHandler(event)"
 							dataProvider="{Application.Instance.display.playCollection}">
 					<mx:columns>
 							<mx:DataGridColumn dataField="PlaylistField" headerText="Playlist"/>
 					</mx:columns>
 				</mx:DataGrid>
-				<s:SWFLoader id="Econest_Image" width="100%" height="40%"/>
-				<s:Label id="Name" fontFamily="Times New Roman" fontSize="22" text="Name"/>
-				<s:Label id="ArtisteDisplay" text="Artiste"/>
-				<s:Label id="AlbumInfo" text="Album"/>
 			</s:VGroup>
-			<s:Scroller width="70%" height="100%">
+			<s:Scroller width="100%" height="100%">
 				<s:VGroup id="MusicGroup" width="100%" height="100%">
 					<s:HGroup id="EasySearch" width="100%" height="35%">
 						<mx:DataGrid id="GenreTable" width="33%" height="100%" borderVisible="true"
@@ -310,10 +332,9 @@
 					<mx:DataGrid id="MusicTable" width="99%" height="65%" borderVisible="false"
 								 color="#FFFFFF" contentBackgroundColor="#D1C6C6"
 								 dataProvider="{Application.Instance.display.musicCollection}" editable="false" selectionColor="#605B5B"
-								 doubleClickEnabled="true" itemDoubleClick="refererRowDoubleClicked(event)">
+								 doubleClickEnabled="true" itemDoubleClick="refererRowDoubleClicked(event)"
+								 rightClick="MusicTable_rightClickHandler(event)">
 						<mx:columns>
-							
-								<mx:DataGridColumn dataField="test" headerText=""  itemRenderer="mx.controls.CheckBox"/>
 								<mx:DataGridColumn dataField="TitleField" headerText="Titre"/>
 								<mx:DataGridColumn dataField="ArtistField" headerText="Artiste"/>
 								<mx:DataGridColumn dataField="AlbumField" headerText="Album"/>

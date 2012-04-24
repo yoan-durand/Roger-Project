@@ -65,7 +65,7 @@ package
 		}
 		
 		
-		private function positionTimerHandler (event:Event)
+		private function positionTimerHandler (event:Event) : void
 		{
 		/*	event.target.value;*/
 			
