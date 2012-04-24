@@ -14,7 +14,12 @@ package
 	
 	import flashx.textLayout.formats.Float;
 	
+	import mx.controls.Image;
+	import mx.controls.Label;
 	import mx.core.FlexGlobals;
+	
+	import spark.components.BorderContainer;
+	import spark.components.VGroup;
 
 	public class Player
 	{
@@ -51,11 +56,17 @@ package
 				soundLoaderContext.checkPolicyFile = true;
 				
 				var mp3:URLRequest = new URLRequest(music_data.Path);
-				var sound:Sound = new Sound();
-				sound.load(mp3,soundLoaderContext);
-				_music_sound = sound;
-				_music_sound.addEventListener(Event.COMPLETE, load_complete);
-				
+				try
+				{
+					var sound:Sound = new Sound();
+					sound.load(mp3,soundLoaderContext);
+					_music_sound = sound;
+					_music_sound.addEventListener(Event.COMPLETE, load_complete);
+				} 
+				catch(error:Error) 
+				{
+					trace ("loading fail");
+				}
 			}
 		}
 		
@@ -64,8 +75,7 @@ package
 			play ();
 		}
 		
-		
-		private function positionTimerHandler (event:Event)
+		private function positionTimerHandler (event:Event):void
 		{
 		/*	event.target.value;*/
 			
@@ -89,23 +99,9 @@ package
 			_music_sound = null;
 			positionTimer.stop();
 			FlexGlobals.topLevelApplication.progressBar.value = 0;
-			_index++;
+			update_index (1);
 			play ();
 			trace("Music end");
-		}
-		
-		public function test(path:String):void
-		{
-			var mymusic:Music = new Music ();
-			mymusic.Path = path;
-			_music_list.push(mymusic);
-			var mymusic2:Music = new Music ();
-			mymusic2.Path = "file:///C:/Users/Vince/Music/Almost king/ALMOST KINGS-Legend.mp3";
-			_music_list.push(mymusic2);
-			var mymusic3:Music = new Music ();
-			mymusic3.Path = "file:///C:/Users/Vince/Music/Almost king/ALMOST KINGS-Unstoppable.mp3";
-			_music_list.push(mymusic3);
-			play ();
 		}
 		
 		public function change_position (position:Number):void
@@ -206,6 +202,41 @@ package
 					_index = index_updated;
 				}
 			}
+		}
+		
+		public function add_music (music:Music):void
+		{
+
+			display_add_music (music);
+			_music_list.push(music);
+		}
+		
+		/* DISPLAY */
+		private function display_add_music (music:Music):void
+		{
+			var container:BorderContainer = new BorderContainer();
+			container.width = 144;
+			container.height = 120;
+			
+			var group:VGroup = new VGroup();
+			group.percentHeight = 100;
+			group.percentWidth = 100;
+			
+			
+			var image:Image = new Image ();
+			image.source = "http://blog.dynatrace.com/wp-content/PerformanceReportSpeedUpLoadTime.png";
+			image.percentHeight = 80;
+			image.percentWidth = 100;
+			group.addElement(image);
+			
+			var label:Label = new Label ();
+			label.text = music.Title;
+			label.percentWidth = 100;
+			group.addElement (label);
+			
+			container.addElement(group);
+			
+			FlexGlobals.topLevelApplication.current_playlist.addElement(container);
 		}
 	}
 }
