@@ -172,7 +172,6 @@
 				appli._player.change_position(event.currentTarget.value);
 				
 			}
-			
 			protected function refererRowDoubleClicked(e:ListEvent):void 
 			{
 				var music:Music = new Music;
@@ -233,6 +232,7 @@
 					Application.Instance.display.update(Application.Instance.list_music);
 				}
 			}
+			
 			
 		]]>
 	</fx:Script>
