@@ -20,14 +20,16 @@
 			import mx.controls.Menu;
 			import mx.controls.sliderClasses.Slider;
 			import mx.core.UIComponent;
+			import mx.events.FlexEvent;
 			import mx.events.FlexNativeWindowBoundsEvent;
 			import mx.events.ListEvent;
 			import mx.events.MenuEvent;
 			import mx.events.SliderEvent;
+			import mx.rpc.AsyncResponder;
 			import mx.rpc.AsyncToken;
 			import mx.rpc.CallResponder;
-			
-			import services.echonest.Echonest;
+			import mx.rpc.events.ResultEvent;
+			import mx.rpc.http.HTTPService;
 			
 			import spark.events.GridSelectionEvent;
 
@@ -72,14 +74,39 @@
 				
 				if (event.item.@name == "music")
 				{
-					var echo:Echonest = new Echonest;
 					var api_key:String = "5TTVQT9W99PC1OSRZ";
 					var artist:String = "Amon amarth";
 					var title:String = "asator";
 					var format:String = "json";
-					var bucket:String = "json&bucket=id:7digital-US&bucket=audio_summary&bucket=tracks";
-					var token:mx.rpc.AsyncToken = echo.search_song(api_key, artist, title, format,  bucket);
+					var bucket1:String = "id:7digital-US";
+					var bucket2:String = "audio_summary";
+					var bucket3:String = "tracks";
+					
+					var http:HTTPService = new HTTPService();
+					
+					// specify the url to request, the method and result format
+					http.url = "http://developer.echonest.com/api/v4/song/search";
+					http.method = "GET";
+					http.resultFormat = "array";
+					var params:Object = { "api_key": api_key, "artist": artist, "title" : title, "format" : format, "bucket" : bucket1, "bucket" : bucket2, "bucket" : bucket3 };
+					
+					// call the HTTP Service's send() to invoke the request, a token is returned
+					var token:AsyncToken = http.send( params );
+					
+					// setup responder (resultHandler and faultHandler functions) and add to token
+					var responder:AsyncResponder = new AsyncResponder( resultHandler, faultHandler );
+					token.addResponder( responder );
 				}
+			}
+			
+			public function resultHandler(result:Object):void
+			{
+				result;
+			}
+			
+			public function faultHandler(result:Object):void
+			{
+				result;
 			}
 			
 			public function add_playlist () : void
@@ -169,6 +196,11 @@
 				Alert.show(e.itemRenderer.data.Path);
 				
 				Application.Instance._player.test(e.itemRenderer.data.Path);
+			}
+			
+			protected function getechonestresult_resultHandler(event:ResultEvent):void
+			{
+				event.result;
 			}
 			
 		]]>
