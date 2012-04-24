@@ -17,12 +17,16 @@
 			
 			import mx.collections.ArrayCollection;
 			import mx.controls.Menu;
+			import mx.controls.sliderClasses.Slider;
 			import mx.core.UIComponent;
 			import mx.events.FlexNativeWindowBoundsEvent;
-			import mx.events.MenuEvent;			
-			import spark.events.GridSelectionEvent;
+			import mx.events.MenuEvent;
 			import mx.events.SliderEvent;
-			import mx.controls.sliderClasses.Slider;
+			
+			import services.echonest.Echonest;
+			import mx.rpc.AsyncToken;
+			
+			import spark.events.GridSelectionEvent;
 			
 			
 			protected function init_application ():void
@@ -61,6 +65,18 @@
 				if (event.item.@name == "add_playlist")
 				{
 					add_playlist();
+				}
+				
+				if (event.item.@name == "music")
+				{
+					var echo:Echonest = new Echonest;
+					var api_key:String = "5TTVQT9W99PC1OSRZ";
+					var artist:String = "Amon amarth";
+					var title:String = "asator";
+					var format:String = "json";
+					var bucket:String = "json&bucket=id:7digital-US&bucket=audio_summary&bucket=tracks";
+					var rez:mx.rpc.AsyncToken = echo.search_song(api_key, artist, title, format,  bucket);
+					rez.result;
 				}
 			}
 			
