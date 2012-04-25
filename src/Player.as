@@ -75,7 +75,9 @@ package
 			play ();
 		}
 		
-		private function positionTimerHandler (event:Event):void
+
+		
+		private function positionTimerHandler (event:Event) : void
 		{
 		/*	event.target.value;*/
 			
