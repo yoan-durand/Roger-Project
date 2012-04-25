@@ -315,9 +315,10 @@
 			<s:HGroup id="current_playlist" width="100%" height="70%" color="#180B0B" clipAndEnableScrolling="true">
 				<s:BorderContainer width="144" height="120">
 					<s:VGroup x="0" y="0" width="100%" height="100%" color="#0D0C0C">
-						<s:Image width="100%" height="80%"
-								 source="assets/neon-wallpaper-blue-puddel_1920x1200_94657.jpg"/>
-						<s:Label width="100%" text="titre et artiste" textAlign="center"/>
+						<s:Image width="100%" height="80%" scaleMode="letterbox"
+								 source="assets/noimageavailable.jpg"/>
+						<s:Label width="100%" text="Ceci est un titre" textAlign="center"/>
+						<s:Label text="Ceci est l'artiste"/>
 					</s:VGroup>
 				</s:BorderContainer>
 			</s:HGroup>

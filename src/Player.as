@@ -14,7 +14,7 @@ package
 	
 	import flashx.textLayout.formats.Float;
 	
-	import mx.controls.Image;
+	import spark.components.Image;
 	import mx.controls.Label;
 	import mx.core.FlexGlobals;
 	
@@ -221,18 +221,25 @@ package
 			var group:VGroup = new VGroup();
 			group.percentHeight = 100;
 			group.percentWidth = 100;
-			
+			group.gap = 0;
 			
 			var image:Image = new Image ();
-			image.source = "http://blog.dynatrace.com/wp-content/PerformanceReportSpeedUpLoadTime.png";
-			image.percentHeight = 80;
+			image.percentHeight = 70;
 			image.percentWidth = 100;
+			var path_cover:String = music.Path_Cover != "" ? music.Path_Cover : "assets/noimageavailable.jpg";
+			image.source = path_cover;
+			image.scaleMode = "letterbox";
 			group.addElement(image);
 			
-			var label:Label = new Label ();
-			label.text = music.Title;
-			label.percentWidth = 100;
-			group.addElement (label);
+			var label_title:Label = new Label ();
+			label_title.text = music.Title;
+			label_title.percentWidth = 100;
+			label_title.height = 20;
+			group.addElement (label_title);
+			var label_artist:Label = new Label ();
+			label_artist.text = music.Artist;
+			label_artist.percentWidth = 100;
+			group.addElement (label_artist);
 			
 			container.addElement(group);
 			
