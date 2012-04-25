@@ -269,7 +269,8 @@
 	</fx:Declarations>
 	<s:VGroup width="100%" height="100%" verticalAlign="top">
 		<s:HGroup id="MenuGroup" width="100%" height="3%">
-			<mx:MenuBar id="myMenuBar" labelField="@label" itemClick="menuBar_clickHandler(event)">
+			<mx:MenuBar id="myMenuBar" color="#FFFFFF" itemClick="menuBar_clickHandler(event)"
+						labelField="@label">
 				<fx:XMLList>
 					<menuitem label="Fichier">
 						<menuitem label="Ajouter un dossier" name="add"/>
@@ -286,54 +287,52 @@
 		</s:HGroup>
 		<s:HGroup width="100%" height="85%">
 
-			<s:VGroup id="InfoPlaylistGroup" width="30%" height="100%">
-				<s:DataGrid id="PlaylistTab" width="100%" height="50%"
+			<s:VGroup id="InfoPlaylistGroup" width="20%" height="100%">
+				<mx:DataGrid id="PlaylistTab" width="100%" height="100%" color="#FFFFFF"
 							dataProvider="{Application.Instance.display.playCollection}"
-							requestedRowCount="4">
-					<s:columns>
-						<s:ArrayList>
-							<s:GridColumn dataField="PlaylistField" headerText="Playlist"></s:GridColumn>
-						</s:ArrayList>
-					</s:columns>
-				</s:DataGrid>
-				<s:SWFLoader id="Econest_Image" width="100%" height="40%"/>
-				<s:Label id="Name" fontFamily="Times New Roman" fontSize="22" text="Name"/>
-				<s:Label id="ArtisteDisplay" text="Artiste"/>
-				<s:Label id="AlbumInfo" text="Album"/>
+							itemClick="PlaylistTab_itemClickHandler(event)">
+					<mx:columns>
+						
+							<mx:DataGridColumn dataField="PlaylistField" headerText="Playlist"/>
+						
+					</mx:columns>
+				</mx:DataGrid>
 			</s:VGroup>
 			<s:Scroller width="100%" height="100%">
 				<s:VGroup id="MusicGroup" width="100%" height="100%">
 					<s:HGroup id="EasySearch" width="100%" height="35%">
-						<s:DataGrid id="GenreTable" width="33%" height="100%" borderVisible="true"
+						<mx:DataGrid id="GenreTable" width="33%" height="100%" borderVisible="true"
 									color="#FFFFFF" contentBackgroundColor="#D2CACA"
-									dataProvider="{Application.Instance.display.genreCollection}" requestedRowCount="4"
+									dataProvider="{Application.Instance.display.genreCollection}"
+									itemClick="GenreTable_itemClickHandler(event)"
 									selectionColor="#656060">
-							<s:columns>
-								<s:ArrayList>
-									<s:GridColumn dataField="GenreBase" headerText="Genre"></s:GridColumn>
-								</s:ArrayList>
-							</s:columns>
+							<mx:columns>
+								
+									<mx:DataGridColumn dataField="GenreBase" headerText="Genre"/>
+								
+							</mx:columns>
 							
-						</s:DataGrid>
-						<s:DataGrid id="ArtistTable" width="33%" height="100%"
-									contentBackgroundColor="#CEC6C6" dataProvider="{Application.Instance.display.artistCollection}"
-									requestedRowCount="4" selectionColor="#726C6C">
-							<s:columns>
-								<s:ArrayList>
-									<s:GridColumn dataField="ArtistBase" headerText="Artiste"></s:GridColumn>
-							    </s:ArrayList>
-							</s:columns>
-						</s:DataGrid>
-						<s:DataGrid id="AlbumTable" width="31%" height="100%" borderVisible="true"
-									chromeColor="#816A6A" contentBackgroundColor="#CEC7C7"
-									dataProvider="{Application.Instance.display.albumCollection}" editable="true" requestedRowCount="4"
-									selectionColor="#60635F">
-							<s:columns>
-								<s:ArrayList>
-									<s:GridColumn dataField="AlbumBase" headerText="Album"></s:GridColumn>
-								</s:ArrayList>
-							</s:columns>
-						</s:DataGrid>
+						</mx:DataGrid>
+						<mx:DataGrid id="ArtistTable" width="33%" height="100%" color="#FFFFFF"
+									contentBackgroundColor="#CEC6C6"
+									dataProvider="{Application.Instance.display.artistCollection}"
+									itemClick="ArtistTable_itemClickHandler(event)"
+									selectionColor="#726C6C">
+							<mx:columns>
+									<mx:DataGridColumn dataField="ArtistBase" headerText="Artiste"/>
+							</mx:columns>
+						</mx:DataGrid>
+						<mx:DataGrid id="AlbumTable" width="31%" height="100%" borderVisible="true"
+									chromeColor="#816A6A" color="#FFFFFF"
+									contentBackgroundColor="#CEC7C7"
+									dataProvider="{Application.Instance.display.albumCollection}"
+								    itemClick="AlbumTable_itemClickHandler(event)" selectionColor="#60635F">
+							<mx:columns>
+								
+									<mx:DataGridColumn dataField="AlbumBase" headerText="Album"/>
+								
+							</mx:columns>
+						</mx:DataGrid>
 					</s:HGroup>
 					<mx:DataGrid id="MusicTable" width="99%" height="65%" borderVisible="false"
 								 color="#FFFFFF" contentBackgroundColor="#D1C6C6"
