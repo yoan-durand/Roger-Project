@@ -103,7 +103,7 @@ package
 				music.Artist = id3.artist != null ? id3.artist : "";
 				music.Title = id3.songName != null ? id3.songName : "";
 				music.Album = id3.album != null ? id3.album : "";
-				music.Genre = id3.genre != null ? id3.genre : "";
+				music.Genre = id3.genre != null ? Tool.getGenre(id3.genre) : "";
 
 				var estimatedLength:int =  
 					Math.ceil(snd.length / (snd.bytesLoaded / snd.bytesTotal));
