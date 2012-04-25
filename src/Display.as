@@ -200,7 +200,7 @@ package
 					if (search_m(musicTab, t) == false)
 					{
 						musicTab.push ({TitleField:t.Title, ArtistField:t.Artist, AlbumField:t.Album, GenreField:t.Genre, LengthField:Tool.lengthtoString(t.Length),
-							Path:t.Path, ID:t.ID_Music});
+							Path:t.Path, ID:t.ID_Music, Path_cover:t.Path_Cover});
 					}			
 					if (search(artistTab, t.Artist) == false)
 					{
@@ -232,7 +232,8 @@ package
 				{
 					if (search(musicTab, t) == false)
 					{
-						musicTab.push ({TitleField:t.Title, ArtistField:t.Artist, AlbumField:t.Album, GenreField:t.Genre, LengthField:Tool.lengthtoString(t.Length), Path:t.Path, ID:t.ID_Music});
+						musicTab.push ({TitleField:t.Title, ArtistField:t.Artist, AlbumField:t.Album, GenreField:t.Genre, LengthField:Tool.lengthtoString(t.Length),
+							Path:t.Path, ID:t.ID_Music, Path_cover:t.Path_cover});
 					}
 					if (search(artistTab, t.Artist) == false)
 					{

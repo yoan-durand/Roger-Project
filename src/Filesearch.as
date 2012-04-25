@@ -90,19 +90,24 @@ package
 			var mp3:URLRequest = new URLRequest(path);
 			
 			var sound:Sound = new Sound();
-			sound.addEventListener(Event.ID3, id3Handler);
+			sound.addEventListener(Event.COMPLETE, test_loading);
 			sound.load(mp3, soundLoaderContext);
 			
-			// ID3 events
-			function id3Handler(event:Event):void {
-				var id3:ID3Info = event.target.id3;
+			
+			function test_loading(event:Event):void
+			{
+				var snd:Sound = event.target as Sound;
+				
+				var id3:ID3Info = snd.id3;
 				var music:Music = new Music();
 				music.Artist = id3.artist != null ? id3.artist : "";
 				music.Title = id3.songName != null ? id3.songName : "";
 				music.Album = id3.album != null ? id3.album : "";
 				music.Genre = id3.genre != null ? id3.genre : "";
-				var snd:Sound = event.target as Sound;
-				music.Length = snd.length;
+
+				var estimatedLength:int =  
+					Math.ceil(snd.length / (snd.bytesLoaded / snd.bytesTotal));
+				music.Length = estimatedLength;
 				music.Path = snd.url != null ? snd.url : "";
 				snd.close();
 				
@@ -110,10 +115,17 @@ package
 				var query_result:SQLResult = Database.exec_query(null, insert_music);
 				if (query_result != null)
 				{
+					music.request();
 					music.ID_Music = query_result.lastInsertRowID;
 					Application.Instance.list_music.push(music);
 					Application.Instance.display.fill_tab(Application.Instance.list_music);
 				}
+				snd.id3
+			}
+			
+			// ID3 events
+			function id3Handler(event:Event):void {
+				
 			}
 			
 		}

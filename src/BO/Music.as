@@ -1,28 +1,84 @@
 package BO
 {
+	import DB.Database;
+	
+	import com.adobe.serializers.json.JSONDecoder;
+	
+	import mx.rpc.AsyncResponder;
+	import mx.rpc.AsyncToken;
+	import mx.rpc.events.FaultEvent;
+	import mx.rpc.events.ResultEvent;
+	import mx.rpc.http.HTTPService;
+	
 	public class Music
 	{
 		private var _ID_Music:int;
 		private var _Path:String;
-		private var _ID_Echonest:int;
+		private var _ID_Echonest:String;
 		private var _Album:String;
 		private var _Length:int;
 		private var _Artist:String;
 		private var _Title:String;
 		private var _Genre:String;
+		private var _Path_Cover:String;
 		
 		public function Music()
 		{
-			_ID_Music = -1;
-			_Path = "";
-			_ID_Echonest = -1;
-			_Album = "";
-			_Length = -1;
-			_Artist = "";
-			_Title = "";
-			_Genre = "";
+			this.ID_Music = -1;
+			this.Path = "";
+			this.ID_Echonest = "";
+			this.Album = "";
+			this.Length = 0;
+			this.Artist = "";
+			this.Title = "";
+			this.Genre = "";
+			this.Path_Cover = "";
+		}
+
+		public function request():void
+		{
+			var http:HTTPService = new HTTPService();
+			
+			// specify the url to request, the method and result format
+			http.url = "http://developer.echonest.com/api/v4/song/search?api_key=5TTVQT9W99PC1OSRZ&artist="+this.Artist+"&title="+this.Title+"&format=json&bucket=id:7digital-US&bucket=audio_summary&bucket=tracks";
+			http.method = "GET";
+			http.resultFormat = "array";
+			
+			// call the HTTP Service's send() to invoke the request, a token is returned
+			var token:AsyncToken = http.send();
+			
+			// setup responder (resultHandler and faultHandler functions) and add to token
+			var responder:AsyncResponder = new AsyncResponder(this.resultHandler, this.faultHandler );
+			token.addResponder( responder );
 		}
 		
+		public function resultHandler(event:ResultEvent, token:Object):void
+		{
+			if (event.result != null)
+			{
+				var res:String = event.result[0].toString();
+				var decod:JSONDecoder = new JSONDecoder;
+				var obj:Object = decod.decode(res);
+				if  (obj.response.songs.source.length != 0)
+				{
+					try
+					{
+						this.ID_Echonest = obj.response.songs.source[0].id;
+						this.Path_Cover = obj.response.songs.source[0].tracks != null ? obj.response.songs.source[0].tracks[0].release_image : "";
+						var update_music:String = "UPDATE Music SET Path_Cover = '"+Tool.str_replace("'", "''", this.Path_Cover)+"', ID_Echonest = '"+this.ID_Echonest+"' WHERE ID_Music = "+this.ID_Music;
+						Database.exec_query(null, update_music);
+					}
+					catch (e:String)
+					{
+					}
+				}
+			}
+		}
+		
+		public function faultHandler(event:FaultEvent):void
+		{
+			event;
+		}
 		
 		public function get Genre():String
 		{
@@ -63,6 +119,16 @@ package BO
 		{
 			_Length = value;
 		}
+		
+		public function get Path_Cover():String
+		{
+			return _Path_Cover;
+		}
+		
+		public function set Path_Cover(value:String):void
+		{
+			_Path_Cover = value;
+		}
 
 		public function get Album():String
 		{
@@ -74,12 +140,12 @@ package BO
 			_Album = value;
 		}
 
-		public function get ID_Echonest():int
+		public function get ID_Echonest():String
 		{
 			return _ID_Echonest;
 		}
 
-		public function set ID_Echonest(value:int):void
+		public function set ID_Echonest(value:String):void
 		{
 			_ID_Echonest = value;
 		}
