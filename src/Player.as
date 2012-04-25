@@ -15,7 +15,7 @@ package
 	import flashx.textLayout.formats.Float;
 	
 	import spark.components.Image;
-	import spark.components.Label;
+	import mx.controls.Label;
 	import mx.core.FlexGlobals;
 	
 	import spark.components.BorderContainer;
@@ -224,7 +224,7 @@ package
 			var group:VGroup = new VGroup();
 			group.percentHeight = 100;
 			group.percentWidth = 100;
-			group.gap = 2;
+			group.gap = 0;
 			
 			var image:Image = new Image ();
 			image.percentHeight = 70;
@@ -234,17 +234,19 @@ package
 			image.scaleMode = "stretch";
 			group.addElement(image);
 			
-			var lab:Label = FlexGlobals.topLevelApplication.magic_label;
 			
 			var label_title:Label = new Label ();
 			label_title.text = music.Title;
 			label_title.percentWidth = 100;
-			label_title.height = 20;
+			label_title.width = 140;
+			label_title.height = 18;
 			label_title.setStyle("textAlign", TextFormatAlign.CENTER);
 			group.addElement (label_title);
 			var label_artist:Label = new Label ();
 			label_artist.text = music.Artist;
 			label_artist.percentWidth = 100;
+			label_title.width = 140;
+			label_title.height = 18;
 			label_artist.setStyle("textAlign", TextFormatAlign.CENTER);
 			group.addElement (label_artist);
 			
