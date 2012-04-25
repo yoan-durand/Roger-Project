@@ -59,18 +59,28 @@ package BO
 				var res:String = event.result[0].toString();
 				var decod:JSONDecoder = new JSONDecoder;
 				var obj:Object = decod.decode(res);
-				if  (obj.response.songs.source.length != 0)
+				try
 				{
-					try
+					for (var i:int = 0; i < obj.response.songs.source.length; i++)
 					{
-						this.ID_Echonest = obj.response.songs.source[0].id;
-						this.Path_Cover = obj.response.songs.source[0].tracks != null ? obj.response.songs.source[0].tracks[0].release_image : "";
-						var update_music:String = "UPDATE Music SET Path_Cover = '"+Tool.str_replace("'", "''", this.Path_Cover)+"', ID_Echonest = '"+this.ID_Echonest+"' WHERE ID_Music = "+this.ID_Music;
-						Database.exec_query(null, update_music);
+						if (obj.response.songs.source[i].tracks != null)
+						{
+							for (var j:int = 0; j < obj.response.songs.source[i].tracks.length; j++)
+							{
+								if (obj.response.songs.source[i].tracks[j].release_image != null)
+								{
+									this.ID_Echonest = obj.response.songs.source[i].id;
+									this.Path_Cover = obj.response.songs.source[i].tracks[j].release_image;
+								}
+							}
+						}
 					}
-					catch (e:String)
-					{
-					}
+					//this.Path_Cover = obj.response.songs.source[0].tracks != null ? obj.response.songs.source[0].tracks[0].release_image : "";
+					var update_music:String = "UPDATE Music SET Path_Cover = '"+Tool.str_replace("'", "''", this.Path_Cover)+"', ID_Echonest = '"+this.ID_Echonest+"' WHERE ID_Music = "+this.ID_Music;
+					Database.exec_query(null, update_music);
+				}
+				catch (e:String)
+				{
 				}
 			}
 		}
