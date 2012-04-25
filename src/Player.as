@@ -15,11 +15,12 @@ package
 	import flashx.textLayout.formats.Float;
 	
 	import spark.components.Image;
-	import mx.controls.Label;
+	import spark.components.Label;
 	import mx.core.FlexGlobals;
 	
 	import spark.components.BorderContainer;
 	import spark.components.VGroup;
+	import flash.text.TextFormatAlign;
 
 	public class Player
 	{
@@ -223,24 +224,28 @@ package
 			var group:VGroup = new VGroup();
 			group.percentHeight = 100;
 			group.percentWidth = 100;
-			group.gap = 0;
+			group.gap = 2;
 			
 			var image:Image = new Image ();
 			image.percentHeight = 70;
 			image.percentWidth = 100;
 			var path_cover:String = music.Path_Cover != "" ? music.Path_Cover : "assets/noimageavailable.jpg";
 			image.source = path_cover;
-			image.scaleMode = "letterbox";
+			image.scaleMode = "stretch";
 			group.addElement(image);
+			
+			var lab:Label = FlexGlobals.topLevelApplication.magic_label;
 			
 			var label_title:Label = new Label ();
 			label_title.text = music.Title;
 			label_title.percentWidth = 100;
 			label_title.height = 20;
+			label_title.setStyle("textAlign", TextFormatAlign.CENTER);
 			group.addElement (label_title);
 			var label_artist:Label = new Label ();
 			label_artist.text = music.Artist;
 			label_artist.percentWidth = 100;
+			label_artist.setStyle("textAlign", TextFormatAlign.CENTER);
 			group.addElement (label_artist);
 			
 			container.addElement(group);
