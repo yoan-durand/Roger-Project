@@ -41,7 +41,7 @@ package
 		{
 			var head : File = new File ();
 			_queue = new Array();
-			head.browseForDirectory("Choose a Directory");
+			head.browseForDirectory("Choisir un dossier");
 			head.addEventListener(Event.SELECT, loadingfilesHandler);
 		}
 		
@@ -100,10 +100,10 @@ package
 				
 				var id3:ID3Info = snd.id3;
 				var music:Music = new Music();
-				music.Artist = id3.artist != null ? id3.artist : "";
-				music.Title = id3.songName != null ? id3.songName : "";
-				music.Album = id3.album != null ? id3.album : "";
-				music.Genre = id3.genre != null ? Tool.getGenre(id3.genre) : "";
+				music.Artist = id3.artist != null ? id3.artist : "Inconnu";
+				music.Title = id3.songName != null ? id3.songName : "Inconnu";
+				music.Album = id3.album != null ? id3.album : "Inconnu";
+				music.Genre = id3.genre != null ? Tool.getGenre(id3.genre) : "Inconnu";
 
 				var estimatedLength:int =  
 					Math.ceil(snd.length / (snd.bytesLoaded / snd.bytesTotal));
