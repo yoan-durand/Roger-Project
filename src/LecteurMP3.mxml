@@ -18,9 +18,11 @@
 			import DB.Database;
 			
 			import mx.collections.ArrayCollection;
+			import mx.containers.TitleWindow;
 			import mx.controls.Alert;
 			import mx.controls.FlexNativeMenu;
 			import mx.controls.Menu;
+			import mx.controls.TextInput;
 			import mx.controls.sliderClasses.Slider;
 			import mx.core.UIComponent;
 			import mx.events.FlexEvent;
@@ -29,14 +31,18 @@
 			import mx.events.ListEvent;
 			import mx.events.MenuEvent;
 			import mx.events.SliderEvent;
+			import mx.managers.PopUpManager;
 			import mx.rpc.AsyncToken;
 			import mx.rpc.CallResponder;
 			import mx.utils.ArrayUtil;
 			
 			import services.echonest.Echonest;
 			
+			import spark.components.Group;
+			import spark.components.Panel;
+			import spark.components.TextArea;
+			import spark.components.TextInput;
 			import spark.events.GridSelectionEvent;
-
 			
 			public var listeMenu1:Array;
 			
@@ -44,6 +50,16 @@
 			public var list:Array;
 			private var _clicked : Object;
 			
+			public function get newplaylist():String
+			{
+				return _newplaylist;
+			}
+
+			public function set newplaylist(value:String):void
+			{
+				_newplaylist = value;
+			}
+
 			public function get clicked():Object
 			{
 				return _clicked;
@@ -110,14 +126,44 @@
 				}
 			}
 			
+			private var _window:TitleWindow;
+			private var _newplaylist:String;
+			
 			public function add_playlist () : void
 			{
-				/* TODO : Implementer une fenêtre où remplir le nom de la playlist */
+					var label:Label = new Label ();
+					var input:spark.components.TextInput = new spark.components.TextInput();
+					var button:Button = new Button();
+					
+					input.id = "src";
+					newplaylist = input.text;
+					button.label = "ok";
+					label.text = "Ajouter un nom de playlist";
+					_window = TitleWindow(PopUpManager.createPopUp(this, TitleWindow));
+					_window.addChild(label);
+					_window.addChild(input);
+					_window.addChild(button);
+					
+					button.addEventListener(MouseEvent.CLICK, clickButton);
+					PopUpManager.centerPopUp(_window);
 				
 				/* Ajoute la playlist dans la base et dans la liste des playlists de l'Application */
+				
+				
+				/* TODO : Afficher la playlist nouvellement créée ds la partie correspondante */
+			}
+			
+			
+			protected function clickButton (event:MouseEvent) : void
+			{
 				var name:String = "";
 				var insert_play:String = "INSERT INTO Playlist (Name) VALUES ('"+name+"')";
 				var sql_res:SQLResult = Database.exec_query(null,  insert_play);
+				
+				if (newplaylist != null)
+				{
+					name = newplaylist;
+				}
 				if (sql_res != null)
 				{
 					var playlist:Object = new Object;
@@ -127,9 +173,8 @@
 					Application.Instance.list_playlist.push(playlist);
 				}
 				
-				/* TODO : Afficher la playlist nouvellement créée ds la partie correspondante */
+				PopUpManager.removePopUp(_window);
 			}
-			
 			
 			public function init_All() : void
 			{
@@ -204,7 +249,6 @@
 				music.Title = e.itemRenderer.data.TitleField;
 				music.Path_Cover = e.itemRenderer.data.Path_cover;
 				Application.Instance._player.add_music(music);
-				Application.Instance._player.play();
 			}
 			
 			
