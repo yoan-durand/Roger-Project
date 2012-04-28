@@ -11,6 +11,7 @@ package DB
 	import flash.events.SQLEvent;
 	import flash.filesystem.File;
 	import flash.text.ReturnKeyLabel;
+	import mx.controls.Alert;
 	
 	public class Database
 	{
@@ -47,6 +48,7 @@ package DB
 					insertst.text = dbinsert;
 				
 					insertst.execute();
+					//Alert.show("music ajouter a la playlist avec succes");
 				}
 			}
 			catch (error:SQLError)

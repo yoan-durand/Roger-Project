@@ -170,10 +170,11 @@
 			
 			public function init_All() : void
 			{
-				var app:Application = Application.Instance;
+				var play:Array;
 				
-				app.display.fill_tab(Application.Instance.list_music);
-				app.display.fill_playlist(Application.Instance.list_playlist);
+				play = DB.Database.get_playlists();
+				Application.Instance.display.fill_tab(Application.Instance.list_music);
+				Application.Instance.display.fill_playlist(play);
 
 			}
 			
@@ -327,19 +328,17 @@
 			
 			protected function MusicTable_rightClickHandler(event:MouseEvent):void
 			{
-				build_menu_item();
-				clicked = event.target.data;
-				contextmenu ();
-			}
-			
-			protected function contextmenu() : void
-			{			
-					Menu1 = new FlexNativeMenu();
-					Menu1.dataProvider = listeMenu1;
-					Menu1.showRoot = false;
-					Menu1.setContextMenu(MusicTable);
-					Menu1.addEventListener(FlexNativeMenuEvent.ITEM_CLICK, actionClicMenu);
-					
+				if (event != null)
+				{
+					build_menu_item();
+					clicked = event.target.data;		
+						Menu1 = new FlexNativeMenu();
+						Menu1.dataProvider = listeMenu1;
+						Menu1.showRoot = false;
+						Menu1.setContextMenu(MusicTable);
+						Menu1.addEventListener(FlexNativeMenuEvent.ITEM_CLICK, actionClicMenu);		
+						return;
+				}
 			}
 			
 			
@@ -371,8 +370,10 @@
 					var test : Array = DB.Database.get_playlists();
 					Application.Instance.list_playlist=DB.Database.get_playlists();
 					Application.Instance.display.fill_playlist(DB.Database.get_playlists());
-
+					
 				}
+				//Menu1.removeEventListener(FlexNativeMenuEvent.ITEM_CLICK, actionClicMenu);
+				
 			}
 
 		]]>
@@ -452,7 +453,8 @@
 								 color="#FFFFFF" contentBackgroundColor="#D1C6C6"
 								 dataProvider="{Application.Instance.display.musicCollection}" editable="false" selectionColor="#605B5B"
 								 doubleClickEnabled="true" itemDoubleClick="refererRowDoubleClicked(event)"
-								 rightClick="MusicTable_rightClickHandler(event)">
+								 rightClick="MusicTable_rightClickHandler(event)"
+								 >
 						<mx:columns>
 								<mx:DataGridColumn dataField="TitleField" headerText="Titre"/>
 								<mx:DataGridColumn dataField="ArtistField" headerText="Artiste"/>
