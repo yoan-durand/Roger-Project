@@ -50,14 +50,14 @@
 			public var list:Array;
 			private var _clicked : Object;
 			
-			public function get newplaylist():String
+			public function get input():spark.components.TextInput
 			{
-				return _newplaylist;
+				return _input;
 			}
 
-			public function set newplaylist(value:String):void
+			public function set input(value:spark.components.TextInput):void
 			{
-				_newplaylist = value;
+				_input = value;
 			}
 
 			public function get clicked():Object
@@ -127,16 +127,15 @@
 			}
 			
 			private var _window:TitleWindow;
-			private var _newplaylist:String;
 			
+			private var _input:spark.components.TextInput
 			public function add_playlist () : void
 			{
 					var label:Label = new Label ();
-					var input:spark.components.TextInput = new spark.components.TextInput();
+					input = new spark.components.TextInput();
 					var button:Button = new Button();
 					
-					input.id = "src";
-					newplaylist = input.text;
+					
 					button.label = "ok";
 					label.text = "Ajouter un nom de playlist";
 					_window = TitleWindow(PopUpManager.createPopUp(this, TitleWindow));
@@ -146,24 +145,15 @@
 					
 					button.addEventListener(MouseEvent.CLICK, clickButton);
 					PopUpManager.centerPopUp(_window);
-				
-				/* Ajoute la playlist dans la base et dans la liste des playlists de l'Application */
-				
-				
-				/* TODO : Afficher la playlist nouvellement créée ds la partie correspondante */
 			}
 			
 			
 			protected function clickButton (event:MouseEvent) : void
 			{
-				var name:String = "";
-				var insert_play:String = "INSERT INTO Playlist (Name) VALUES ('"+name+"')";
+				var name:String = input.text;
+				var insert_play:String = "INSERT INTO Playlist (Name) VALUES (\""+name+"\")";
 				var sql_res:SQLResult = Database.exec_query(null,  insert_play);
 				
-				if (newplaylist != null)
-				{
-					name = newplaylist;
-				}
 				if (sql_res != null)
 				{
 					var playlist:Object = new Object;
@@ -173,6 +163,8 @@
 					Application.Instance.list_playlist.push(playlist);
 				}
 				
+				Application.Instance.display.playCollection.removeAll();
+				Application.Instance.display.fill_playlist(DB.Database.list_query("select * from Playlist"));
 				PopUpManager.removePopUp(_window);
 			}
 			
@@ -306,8 +298,8 @@
 				var musiclist : Array = new Array;
 			
 				Application.Instance.display.musicCollection.removeAll();
-				
-				for each (var play:* in Application.Instance.list_playlist)
+				musiclist =  Application.Instance.list_playlist;
+				for each (var play:* in musiclist)
 				{
 					if (play.Name === event.itemRenderer.data.PlaylistField)
 					{
@@ -374,7 +366,11 @@
 				}
 				else
 				{
-					Database.exec_query(null, "INSERT INTO In_Playlist (ID_Playlist, ID_Music) VALUES ("+id_Playlist+", "+id_music+")");
+ 					Database.exec_query(null, "INSERT INTO In_Playlist (ID_Playlist, ID_Music) VALUES ("+id_Playlist+", "+id_music+")");
+					Application.Instance.display.playCollection.removeAll();
+					var test : Array = DB.Database.get_playlists();
+					Application.Instance.list_playlist=DB.Database.get_playlists();
+					Application.Instance.display.fill_playlist(DB.Database.get_playlists());
 
 				}
 			}
