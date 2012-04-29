@@ -24,7 +24,6 @@
 			import mx.controls.Menu;
 			import mx.controls.TextInput;
 			import mx.controls.sliderClasses.Slider;
-			import mx.core.FlexGlobals;
 			import mx.core.UIComponent;
 			import mx.events.FlexEvent;
 			import mx.events.FlexNativeMenuEvent;
@@ -44,6 +43,7 @@
 			import spark.components.TextArea;
 			import spark.components.TextInput;
 			import spark.events.GridSelectionEvent;
+			import spark.components.Label;
 			
 			public var listeMenu1:Array;
 			
@@ -51,14 +51,14 @@
 			public var list:Array;
 			private var _clicked : Object;
 			
-			public function get input():spark.components.TextInput
+			public function get newplaylist():String
 			{
-				return _input;
+				return _newplaylist;
 			}
 
-			public function set input(value:spark.components.TextInput):void
+			public function set newplaylist(value:String):void
 			{
-				_input = value;
+				_newplaylist = value;
 			}
 
 			public function get clicked():Object
@@ -128,15 +128,16 @@
 			}
 			
 			private var _window:TitleWindow;
+			private var _newplaylist:String;
 			
-			private var _input:spark.components.TextInput
 			public function add_playlist () : void
 			{
 					var label:Label = new Label ();
-					input = new spark.components.TextInput();
+					var input:spark.components.TextInput = new spark.components.TextInput();
 					var button:Button = new Button();
 					
-					
+					input.id = "src";
+					newplaylist = input.text;
 					button.label = "ok";
 					label.text = "Ajouter un nom de playlist";
 					_window = TitleWindow(PopUpManager.createPopUp(this, TitleWindow));
@@ -146,15 +147,24 @@
 					
 					button.addEventListener(MouseEvent.CLICK, clickButton);
 					PopUpManager.centerPopUp(_window);
+				
+				/* Ajoute la playlist dans la base et dans la liste des playlists de l'Application */
+				
+				
+				/* TODO : Afficher la playlist nouvellement créée ds la partie correspondante */
 			}
 			
 			
 			protected function clickButton (event:MouseEvent) : void
 			{
-				var name:String = input.text;
-				var insert_play:String = "INSERT INTO Playlist (Name) VALUES (\""+name+"\")";
+				var name:String = "";
+				var insert_play:String = "INSERT INTO Playlist (Name) VALUES ('"+name+"')";
 				var sql_res:SQLResult = Database.exec_query(null,  insert_play);
 				
+				if (newplaylist != null)
+				{
+					name = newplaylist;
+				}
 				if (sql_res != null)
 				{
 					var playlist:Object = new Object;
@@ -164,18 +174,15 @@
 					Application.Instance.list_playlist.push(playlist);
 				}
 				
-				Application.Instance.display.playCollection.removeAll();
-				Application.Instance.display.fill_playlist(DB.Database.list_query("select * from Playlist"));
 				PopUpManager.removePopUp(_window);
 			}
 			
 			public function init_All() : void
 			{
-				var play:Array;
+				var app:Application = Application.Instance;
 				
-				play = DB.Database.get_playlists();
-				Application.Instance.display.fill_tab(Application.Instance.list_music);
-				Application.Instance.display.fill_playlist(play);
+				app.display.fill_tab(Application.Instance.list_music);
+				app.display.fill_playlist(Application.Instance.list_playlist);
 
 			}
 			
@@ -300,30 +307,48 @@
 				var musiclist : Array = new Array;
 			
 				Application.Instance.display.musicCollection.removeAll();
-				musiclist =  Application.Instance.list_playlist;
-				for each (var play:* in musiclist)
+				
+				for each (var play:* in Application.Instance.list_playlist)
 				{
 					if (play.Name === event.itemRenderer.data.PlaylistField)
 					{
-						Application.Instance.display.update(play.Musics);					
+						
+						Application.Instance.display.update(play.Musics);
+						for (var i : int = 0; i < play.Musics.length; i++)
+						{
+							var music:Music = new Music;
+							
+							music.Album = play.Musics[i].Album;
+							music.Artist = play.Musics[i].Artist;
+							music.Genre = play.Musics[i].Genre;
+							music.ID_Echonest = play.Musics[i].ID_Echonest;
+							music.ID_Music = play.Musics[i].ID_Music;
+							music.Length = play.Musics[i].Length;
+							music.Path = play.Musics[i].Path;
+							music.Title = play.Musics[i].Title;
+							
+							Application.Instance._player.add_music(music);
+						}						
 					}
 				}
 			}
-		
+			
 			
 			protected function MusicTable_rightClickHandler(event:MouseEvent):void
 			{
+				build_menu_item();
 				clicked = event.target.data;
-				if (clicked.TitleField === event.target.data.TitleField)
-				{
-					build_menu_item();
-							
+				contextmenu ();
+			}
+			
+			protected function contextmenu() : void
+			{			
 					Menu1 = new FlexNativeMenu();
 					Menu1.dataProvider = listeMenu1;
 					Menu1.showRoot = false;
 					Menu1.setContextMenu(MusicTable);
-					Menu1.addEventListener(FlexNativeMenuEvent.ITEM_CLICK, actionClicMenu);		
-				}
+					Menu1.addEventListener(FlexNativeMenuEvent.ITEM_CLICK, actionClicMenu);
+					
 			}
 			
 			
@@ -333,7 +358,6 @@
 				var id_music : int = clicked.ID;
 				var id_Playlist : int = e.item.id;
 				
-				clicked = null;
 				if ("Ajouter a la liste de lecture" == e.label)
 				{
 					var music : Music = new Music;
@@ -351,54 +375,11 @@
 				}
 				else
 				{
- 					Database.exec_query(null, "INSERT INTO In_Playlist (ID_Playlist, ID_Music) VALUES ("+id_Playlist+", "+id_music+")");
-					Application.Instance.display.playCollection.removeAll();
-					var test : Array = DB.Database.get_playlists();
-					Application.Instance.list_playlist=DB.Database.get_playlists();
-					Application.Instance.display.fill_playlist(DB.Database.get_playlists());
-					
+					Database.exec_query(null, "INSERT INTO In_Playlist (ID_Playlist, ID_Music) VALUES ("+id_Playlist+", "+id_music+")");
+
 				}
-				Menu1 = null;
-				
 			}
 
-			protected function PlaylistTab_itemDoubleClickHandler(event:ListEvent):void
-			{
-				Application.Instance._player.stop();
-				var musiclist : Array = new Array;
-				
-				Application.Instance.display.musicCollection.removeAll();
-				Application.Instance._player.music_list = null;
-				Application.Instance._player.music_list = new Array();
-				FlexGlobals.topLevelApplication.current_playlist.removeAllElements();
-				for each (var play:* in Application.Instance.list_playlist)
-				{
-					if (play.Name === event.itemRenderer.data.PlaylistField)
-					{
-						Application.Instance.display.update(play.Musics);
-						for (var i : int = 0; i < play.Musics.length; i++)
-						{
-							var music:Music = new Music;
-							
-							music.Album = play.Musics[i].Album;
-							music.Artist = play.Musics[i].Artist;
-							music.Genre = play.Musics[i].Genre;
-							music.ID_Echonest = play.Musics[i].ID_Echonest;
-							music.ID_Music = play.Musics[i].ID_Music;
-							music.Length = play.Musics[i].Length;
-							music.Path = play.Musics[i].Path;
-							music.Title = play.Musics[i].Title;
-							music.Path_Cover = play.Musics[i].Path_Cover;
-							
-							Application.Instance._player.add_music(music);
-						}						
-					}
-				}
-				
-				Application.Instance._player.play();
-			}
-			
-			
 		]]>
 	</fx:Script>
 	
@@ -428,9 +409,7 @@
 			<s:VGroup id="InfoPlaylistGroup" width="20%" height="100%">
 				<mx:DataGrid id="PlaylistTab" width="100%" height="100%" color="#FFFFFF"
 							dataProvider="{Application.Instance.display.playCollection}"
-							itemClick="PlaylistTab_itemClickHandler(event)"
-							doubleClickEnabled="true"
-							itemDoubleClick="PlaylistTab_itemDoubleClickHandler(event)">
+							itemClick="PlaylistTab_itemClickHandler(event)">
 					<mx:columns>
 						
 							<mx:DataGridColumn dataField="PlaylistField" headerText="Playlist"/>
@@ -478,8 +457,7 @@
 								 color="#FFFFFF" contentBackgroundColor="#D1C6C6"
 								 dataProvider="{Application.Instance.display.musicCollection}" editable="false" selectionColor="#605B5B"
 								 doubleClickEnabled="true" itemDoubleClick="refererRowDoubleClicked(event)"
-								 rightClick="MusicTable_rightClickHandler(event)"
-								 >
+								 rightClick="MusicTable_rightClickHandler(event)">
 						<mx:columns>
 								<mx:DataGridColumn dataField="TitleField" headerText="Titre"/>
 								<mx:DataGridColumn dataField="ArtistField" headerText="Artiste"/>
@@ -495,14 +473,6 @@
 		<s:VGroup width="100%" height="174">
 			<s:Scroller width="100%" height="135">
 			<s:HGroup id="current_playlist" width="100%" height="70%" color="#180B0B" clipAndEnableScrolling="true">
-				<s:BorderContainer width="144" height="120">
-					<s:VGroup x="0" y="0" width="100%" height="100%" color="#0D0C0C">
-						<s:Image width="100%" height="80%" scaleMode="letterbox"
-								 source="assets/noimageavailable.jpg"/>
-						<s:Label id="magic_label" width="100%" text="Ceci est un titre" textAlign="center"/>
-						<s:Label text="Ceci est l'artiste"/>
-					</s:VGroup>
-				</s:BorderContainer>
 			</s:HGroup>
 			</s:Scroller> 
 			<!-- <s:HScrollBar viewport="{current_playlist}" width="100%" /> -->
