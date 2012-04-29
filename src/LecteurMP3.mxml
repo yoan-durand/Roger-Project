@@ -51,6 +51,16 @@
 			public var list:Array;
 			private var _clicked : Object;
 			
+			public function get window():TitleWindow
+			{
+				return _window;
+			}
+
+			public function set window(value:TitleWindow):void
+			{
+				_window = value;
+			}
+
 			public function get input():spark.components.TextInput
 			{
 				return _input;
@@ -135,15 +145,18 @@
 					var label:Label = new Label ();
 					input = new spark.components.TextInput();
 					var button:Button = new Button();
-					
-					
+					var g:VGroup = new VGroup ();
+				
 					button.label = "ok";
 					label.text = "Ajouter un nom de playlist";
-					_window = TitleWindow(PopUpManager.createPopUp(this, TitleWindow));
-					_window.addChild(label);
-					_window.addChild(input);
-					_window.addChild(button);
+					window = TitleWindow(PopUpManager.createPopUp(this, TitleWindow));
+					window.width = 200;
+					window.height = 100;
+					g.addElement(label);
 					
+					g.addElement(input);
+					g.addElement(button);
+					window.addChild(g);
 					button.addEventListener(MouseEvent.CLICK, clickButton);
 					PopUpManager.centerPopUp(_window);
 			}
@@ -399,6 +412,12 @@
 			}
 			
 			
+			protected function PlaylistTab_rightClickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				
+			}
+			
 		]]>
 	</fx:Script>
 	
@@ -430,6 +449,8 @@
 							dataProvider="{Application.Instance.display.playCollection}"
 							itemClick="PlaylistTab_itemClickHandler(event)"
 							doubleClickEnabled="true"
+							enabled="true"
+							rightClick="PlaylistTab_rightClickHandler(event)"
 							itemDoubleClick="PlaylistTab_itemDoubleClickHandler(event)">
 					<mx:columns>
 						
