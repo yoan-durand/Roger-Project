@@ -17,8 +17,10 @@ package
 	import flashx.textLayout.formats.BackgroundColor;
 	import flashx.textLayout.formats.Float;
 	
+	import mx.controls.FlexNativeMenu;
 	import mx.controls.Label;
 	import mx.core.FlexGlobals;
+	import mx.events.FlexNativeMenuEvent;
 	
 	import spark.components.BorderContainer;
 	import spark.components.Image;
@@ -252,6 +254,46 @@ package
 			
 		}
 		
+		private function select_music_menu (event:MouseEvent):void
+		{
+			var container:BorderContainer = event.currentTarget as BorderContainer;
+			var position:int = FlexGlobals.topLevelApplication.current_playlist.getElementIndex(container);
+			
+			
+			var listeMenu1:Array = [{label: "Supprimer de la playlist"}];
+			
+			var Menu1:FlexNativeMenu = new FlexNativeMenu();
+			Menu1.dataProvider = listeMenu1;
+			Menu1.showRoot = false;
+			Menu1.setContextMenu(container);
+			Menu1.addEventListener(FlexNativeMenuEvent.ITEM_CLICK, function(e:FlexNativeMenuEvent):void{
+				deleteOnClicMenu(e,position);
+			});
+
+			
+		}
+		
+		protected function deleteOnClicMenu(e:FlexNativeMenuEvent, position:int) : void
+		{
+			if (position == _index)
+			{
+				stop ();
+			}
+			FlexGlobals.topLevelApplication.current_playlist.removeElementAt(position);
+			_music_list.splice(position,1);
+			if (position == _index)
+			{
+				_index--;
+				update_index (1);
+				play ();
+			}
+			if (position < _index)
+			{
+				update_index (-1);
+			}
+			
+			
+		}
 		/* DISPLAY */
 		private function display_add_music (music:Music, position:int = 0):void
 		{
@@ -264,6 +306,7 @@ package
 			container.setStyle("borderWeight" , 2);
 			container.setStyle("cornerRadius", 5);
 			container.addEventListener(MouseEvent.CLICK, select_music);
+			container.addEventListener(MouseEvent.RIGHT_CLICK, select_music_menu);
 			
 			var group:VGroup = new VGroup();
 			group.percentHeight = 100;
