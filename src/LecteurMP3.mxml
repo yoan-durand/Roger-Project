@@ -153,18 +153,20 @@
 					
 					_input = new spark.components.TextInput();
 					
-					_input.x = 15;
-					_input.y = 15;
+				
 					button.label = "ok";
 					label.text = "Ajouter un nom de playlist";
 					window = TitleWindow(PopUpManager.createPopUp(this, TitleWindow));
 					window.width = 200;
 					window.height = 100;
-					
+					label.move(20, 15);
+					_input.move(20, 25);
 					window.addChild(label);
 					
 					window.addChild(_input);
 					window.addChild(button);
+					
+					
 					
 					button.addEventListener(MouseEvent.CLICK, clickButton);
 					PopUpManager.centerPopUp(_window);
@@ -474,7 +476,7 @@
 							itemDoubleClick="PlaylistTab_itemDoubleClickHandler(event)">
 					<mx:columns>
 						
-							<mx:DataGridColumn dataField="PlaylistField" headerText="Playlist"/>
+							<mx:DataGridColumn dataField="PlaylistField" headerText="Playlists"/>
 						
 					</mx:columns>
 				</mx:DataGrid>
@@ -561,10 +563,8 @@
 								mode="manual"
 								maximum="100" minimum="0"/>-->
 				
-				<s:ToggleButton id="ShuffleButton" width="10%" height="100%" label="Shuffle"
+				<s:ToggleButton id="ShuffleButton" width="20%" height="100%" label="Shuffle"
 								click="ShuffleButton_clickHandler(event)"/>
-				<s:ToggleButton id="RepeatButton" width="10%" height="100%" label="Repeat"
-								click="RepeatButton_clickHandler(event)"/>
 			</s:HGroup>
 		</s:VGroup>
 	</s:VGroup>
