@@ -341,9 +341,15 @@
 			
 			protected function MusicTable_rightClickHandler(event:MouseEvent):void
 			{
-				build_menu_item();
-				clicked = event.target.data;
-				contextmenu ();
+				if (clicked.TitleField == event.target.data.TitleField)
+				{
+					build_menu_item();
+					contextmenu ();
+				}
+				else
+				{
+					MusicTable.removeEventListener(MouseEvent.RIGHT_CLICK, MusicTable_rightClickHandler);
+				}
 			}
 			
 			protected function contextmenu() : void
@@ -377,7 +383,7 @@
 						music.Title = clicked.TitleField;
 						
 						Application.Instance._player.add_music(music);
-						Menu1.removeEventListener(FlexNativeMenuEvent.ITEM_CLICK, actionClicMenu);
+						
 					}
 					else
 					{
@@ -393,10 +399,7 @@
 
 				
 			}
-			
-			
-				
-			
+
 				
 			protected function PlaylistTab_itemDoubleClickHandler(event:ListEvent):void
 				
@@ -447,6 +450,12 @@
 				
   
 
+			protected function MusicTable_clickHandler(event:MouseEvent):void
+			{
+				clicked = event.target.data;
+				MusicTable.addEventListener(MouseEvent.RIGHT_CLICK, MusicTable_rightClickHandler);
+			}
+			
 		]]>
 	</fx:Script>
 	
@@ -521,7 +530,7 @@
 								 color="#FFFFFF" contentBackgroundColor="#D1C6C6"
 								 dataProvider="{Application.Instance.display.musicCollection}" editable="false" selectionColor="#605B5B"
 								 doubleClickEnabled="true" itemDoubleClick="refererRowDoubleClicked(event)"
-								 rightClick="MusicTable_rightClickHandler(event)">
+								 click="MusicTable_clickHandler(event)">
 						<mx:columns>
 								<mx:DataGridColumn dataField="TitleField" headerText="Titre"/>
 								<mx:DataGridColumn dataField="ArtistField" headerText="Artiste"/>
