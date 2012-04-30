@@ -41,8 +41,17 @@ package
 		{
 			var head : File = new File ();
 			_queue = new Array();
+			addEventListener("search_file", shift_and_search);
 			head.browseForDirectory("Choisir un dossier");
 			head.addEventListener(Event.SELECT, loadingfilesHandler);
+		}
+		
+		private function shift_and_search (event:Event):void
+		{
+			if (_queue.length != 0)
+			{
+				search (_queue.shift());
+			}
 		}
 		
 		public function search (root : File) : void
@@ -55,12 +64,12 @@ package
 			}
 			else
 			{
+				dispatchEvent (new Event("search_file"));
 				if (this.isValidType(root.extension))
 				{
-					//dispatchEvent (new FileSearchEvent (root));
 					parse_mp3 (root.nativePath);
 				}
-			}
+			}	
 		}
 		
 		protected function _directoryListingHandler (event : FileListEvent) :void
@@ -71,7 +80,7 @@ package
 				//on enfile les dossier dans _queue
 				_queue.push(f);
 			}
-			while (_queue.length != 0)
+			if (_queue.length != 0)
 			{
 				search (_queue.shift());
 			}

@@ -183,7 +183,6 @@
 				
 				app.display.fill_tab(Application.Instance.list_music);
 				app.display.fill_playlist(Application.Instance.list_playlist);
-
 			}
 			
 			
@@ -249,7 +248,7 @@
 				music.Path = e.itemRenderer.data.Path;
 				music.Title = e.itemRenderer.data.TitleField;
 				music.Path_Cover = e.itemRenderer.data.Path_cover;
-				Application.Instance._player.add_music(music);
+				Application.Instance._player.insert_and_play_music(music);
 			}
 			
 			
@@ -470,20 +469,20 @@
 				</s:VGroup>
 			</s:Scroller>
 		</s:HGroup>
-		<s:VGroup width="100%" height="174">
-			<s:Scroller width="100%" height="135">
+		<s:VGroup width="100%" height="174" horizontalCenter="0" verticalCenter="0">
+			<s:Scroller width="100%" height="135" >
 			<s:HGroup id="current_playlist" width="100%" height="70%" color="#180B0B" clipAndEnableScrolling="true">
 			</s:HGroup>
 			</s:Scroller> 
 			<!-- <s:HScrollBar viewport="{current_playlist}" width="100%" /> -->
 			<s:HGroup id="PlayElement" width="100%" height="11%" verticalAlign="middle">
-				<s:Button id="Rewind" y="20" width="15%" height="100%" label="Rewind"
+				<s:Button id="Rewind" y="20" width="15%" height="100%" label="Back"
 						  click="Rewind_clickHandler(event)"/>
 				<s:Button id="Play" y="20" width="15%" height="100%" label="Play"
 						  click="Play_clickHandler(event)"/>
 				<s:Button id="Stop" y="21" width="15%" height="100%" label="Stop"
 						  click="Stop_clickHandler(event)"/>
-				<s:Button id="forwind" y="19" width="15%" height="100%" label="Forwind"
+				<s:Button id="forwind" y="19" width="15%" height="100%" label="Next"
 						  click="forwind_clickHandler(event)"/>
 				<s:HSlider id="SpeekerLevel" width="71" change="SpeekerLevel_changeHandler(event)"
 						   maximum="1" minimum="0" snapInterval="0.01" value="1"/>
