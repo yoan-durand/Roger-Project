@@ -331,31 +331,17 @@
 			
 			protected function PlaylistTab_itemClickHandler(event:ListEvent):void
 			{
-				var musiclist : Array = new Array;
-			
+				
 				Application.Instance.display.musicCollection.removeAll();
+				Application.Instance._player.music_list = null;
+				Application.Instance._player.music_list = new Array();
 				
 				for each (var play:* in Application.Instance.list_playlist)
 				{
 					if (play.Name === event.itemRenderer.data.PlaylistField)
 					{
 						
-						Application.Instance.display.update(play.Musics);
-						for (var i : int = 0; i < play.Musics.length; i++)
-						{
-							var music:Music = new Music;
-							
-							music.Album = play.Musics[i].Album;
-							music.Artist = play.Musics[i].Artist;
-							music.Genre = play.Musics[i].Genre;
-							music.ID_Echonest = play.Musics[i].ID_Echonest;
-							music.ID_Music = play.Musics[i].ID_Music;
-							music.Length = play.Musics[i].Length;
-							music.Path = play.Musics[i].Path;
-							music.Title = play.Musics[i].Title;
-							
-							Application.Instance._player.add_music(music);
-						}						
+						Application.Instance.display.update(play.Musics);					
 					}
 				}
 			}
@@ -430,6 +416,7 @@
 					
 		        var musiclist : Array = new Array;
 
+				Application.Instance._player.stop();
 		        Application.Instance.display.musicCollection.removeAll();
 		        Application.Instance._player.music_list = null;
 		        Application.Instance._player.music_list = new Array();
@@ -454,7 +441,10 @@
 					              music.Length = play.Musics[i].Length;
 							      music.Path = play.Musics[i].Path;
 							      music.Title = play.Musics[i].Title;
-								  music.Path_Cover = play.Music[i].Path_Cover;						
+								  if (play.Musics[i].Path_Cover != null)
+									  music.Path_Cover = play.Musics[i].Path_Cover;
+								  else
+									  music.Path_Cover = "";						
 
 		             			  Application.Instance._player.add_music(music);
 							
@@ -495,7 +485,6 @@
 							dataProvider="{Application.Instance.display.playCollection}"
 							itemClick="PlaylistTab_itemClickHandler(event)"
 							doubleClickEnabled="true"
-							enabled="true"
 							itemDoubleClick="PlaylistTab_itemDoubleClickHandler(event)">
 					<mx:columns>
 						
