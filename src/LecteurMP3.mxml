@@ -152,6 +152,9 @@
 
 					
 					_input = new spark.components.TextInput();
+					
+					_input.x = 15;
+					_input.y = 15;
 					button.label = "ok";
 					label.text = "Ajouter un nom de playlist";
 					window = TitleWindow(PopUpManager.createPopUp(this, TitleWindow));
