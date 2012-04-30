@@ -24,6 +24,7 @@
 			import mx.controls.Menu;
 			import mx.controls.TextInput;
 			import mx.controls.sliderClasses.Slider;
+			import mx.core.FlexGlobals;
 			import mx.core.UIComponent;
 			import mx.events.FlexEvent;
 			import mx.events.FlexNativeMenuEvent;
@@ -39,18 +40,40 @@
 			import services.echonest.Echonest;
 			
 			import spark.components.Group;
+			import spark.components.Label;
 			import spark.components.Panel;
 			import spark.components.TextArea;
 			import spark.components.TextInput;
 			import spark.events.GridSelectionEvent;
-			import spark.components.Label;
 			
 			public var listeMenu1:Array;
 			
-			public var Menu1:FlexNativeMenu;
+			private var _Menu1:FlexNativeMenu;
 			public var list:Array;
 			private var _clicked : Object;
 			
+
+			public function get Menu1():FlexNativeMenu
+			{
+				return _Menu1;
+			}
+
+			public function set Menu1(value:FlexNativeMenu):void
+			{
+				_Menu1 = value;
+			}
+
+			public function get window():TitleWindow
+			{
+				return _window;
+			}
+
+			public function set window(value:TitleWindow):void
+			{
+				_window = value;
+			}
+
+
 			public function get newplaylist():String
 			{
 				return _newplaylist;
@@ -135,23 +158,28 @@
 					var label:Label = new Label ();
 					var input:spark.components.TextInput = new spark.components.TextInput();
 					var button:Button = new Button();
+
+					var g:VGroup = new VGroup ();
+				
+
 					
 					input.id = "src";
 					newplaylist = input.text;
+
 					button.label = "ok";
 					label.text = "Ajouter un nom de playlist";
-					_window = TitleWindow(PopUpManager.createPopUp(this, TitleWindow));
-					_window.addChild(label);
-					_window.addChild(input);
-					_window.addChild(button);
+					window = TitleWindow(PopUpManager.createPopUp(this, TitleWindow));
+					window.width = 200;
+					window.height = 100;
+					g.addElement(label);
 					
+					g.addElement(input);
+					g.addElement(button);
+					window.addChild(g);
 					button.addEventListener(MouseEvent.CLICK, clickButton);
 					PopUpManager.centerPopUp(_window);
 				
-				/* Ajoute la playlist dans la base et dans la liste des playlists de l'Application */
-				
-				
-				/* TODO : Afficher la playlist nouvellement créée ds la partie correspondante */
+			
 			}
 			
 			
@@ -303,31 +331,17 @@
 			
 			protected function PlaylistTab_itemClickHandler(event:ListEvent):void
 			{
-				var musiclist : Array = new Array;
-			
+				
 				Application.Instance.display.musicCollection.removeAll();
+				Application.Instance._player.music_list = null;
+				Application.Instance._player.music_list = new Array();
 				
 				for each (var play:* in Application.Instance.list_playlist)
 				{
 					if (play.Name === event.itemRenderer.data.PlaylistField)
 					{
 						
-						Application.Instance.display.update(play.Musics);
-						for (var i : int = 0; i < play.Musics.length; i++)
-						{
-							var music:Music = new Music;
-							
-							music.Album = play.Musics[i].Album;
-							music.Artist = play.Musics[i].Artist;
-							music.Genre = play.Musics[i].Genre;
-							music.ID_Echonest = play.Musics[i].ID_Echonest;
-							music.ID_Music = play.Musics[i].ID_Music;
-							music.Length = play.Musics[i].Length;
-							music.Path = play.Musics[i].Path;
-							music.Title = play.Musics[i].Title;
-							
-							Application.Instance._player.add_music(music);
-						}						
+						Application.Instance.display.update(play.Musics);					
 					}
 				}
 			}
@@ -348,6 +362,7 @@
 					Menu1.setContextMenu(MusicTable);
 					Menu1.addEventListener(FlexNativeMenuEvent.ITEM_CLICK, actionClicMenu);
 					
+
 			}
 			
 			
@@ -357,27 +372,92 @@
 				var id_music : int = clicked.ID;
 				var id_Playlist : int = e.item.id;
 				
-				if ("Ajouter a la liste de lecture" == e.label)
-				{
-					var music : Music = new Music;
-					
-					music.Album = clicked.AlbumField;
-					music.Artist = clicked.ArtistField;
-					music.Genre = clicked.GenreField;
-					music.ID_Music = clicked.ID;
-					music.Length = clicked.LengthField;
-					music.Path = clicked.Path;
-					music.Path_Cover = clicked.Path_cover;
-					music.Title = clicked.TitleField;
-					
-					Application.Instance._player.add_music(music);
-				}
-				else
-				{
-					Database.exec_query(null, "INSERT INTO In_Playlist (ID_Playlist, ID_Music) VALUES ("+id_Playlist+", "+id_music+")");
 
+				if (clicked != null)
+				{
+					if ("Ajouter a la liste de lecture" == e.label)
+					{
+						var music : Music = new Music;
+						
+						music.Album = clicked.AlbumField;
+						music.Artist = clicked.ArtistField;
+						music.Genre = clicked.GenreField;
+						music.ID_Music = clicked.ID;
+						music.Length = clicked.LengthField;
+						music.Path = clicked.Path;
+						music.Path_Cover = clicked.Path_cover;
+						music.Title = clicked.TitleField;
+						
+						Application.Instance._player.add_music(music);
+						Menu1.removeEventListener(FlexNativeMenuEvent.ITEM_CLICK, actionClicMenu);
+					}
+					else
+					{
+	 					Database.exec_query(null, "INSERT INTO In_Playlist (ID_Playlist, ID_Music) VALUES ("+id_Playlist+", "+id_music+")");
+						Application.Instance.display.playCollection.removeAll();
+						var test : Array = DB.Database.get_playlists();
+						Application.Instance.list_playlist=DB.Database.get_playlists();
+						Application.Instance.display.fill_playlist(DB.Database.get_playlists());
+						Menu1.unsetContextMenu(MusicTable);
+						Menu1.removeEventListener(FlexNativeMenuEvent.ITEM_CLICK, actionClicMenu);
+					}
+					
 				}
+				
 			}
+			
+			
+				
+			
+				
+			protected function PlaylistTab_itemDoubleClickHandler(event:ListEvent):void
+				
+            {
+					
+		        var musiclist : Array = new Array;
+
+				Application.Instance._player.stop();
+		        Application.Instance.display.musicCollection.removeAll();
+		        Application.Instance._player.music_list = null;
+		        Application.Instance._player.music_list = new Array();
+		        FlexGlobals.topLevelApplication.current_playlist.removeAllElements();
+		
+		        for each (var play:* in Application.Instance.list_playlist)
+		
+		        {
+			         if (play.Name === event.itemRenderer.data.PlaylistField)
+				
+				          {
+					           Application.Instance.display.update(play.Musics);
+					           for (var i : int = 0; i < play.Musics.length; i++)
+						       {
+						    	  var music:Music = new Music;
+								  
+							      music.Album = play.Musics[i].Album;
+							      music.Artist = play.Musics[i].Artist;
+					 		      music.Genre = play.Musics[i].Genre;
+					              music.ID_Echonest = play.Musics[i].ID_Echonest;
+					              music.ID_Music = play.Musics[i].ID_Music;
+					              music.Length = play.Musics[i].Length;
+							      music.Path = play.Musics[i].Path;
+							      music.Title = play.Musics[i].Title;
+								  if (play.Musics[i].Path_Cover != null)
+									  music.Path_Cover = play.Musics[i].Path_Cover;
+								  else
+									  music.Path_Cover = "";						
+
+		             			  Application.Instance._player.add_music(music);
+							
+		            			}            
+					
+		          			}	
+			
+		       }
+	
+		        Application.Instance._player.play();
+		}
+				
+  
 
 		]]>
 	</fx:Script>
@@ -392,13 +472,8 @@
 				<fx:XMLList>
 					<menuitem label="Fichier">
 						<menuitem label="Ajouter un dossier" name="add"/>
-						<menuitem label="Ouvrir un fichier" name="open"/>
 						<menuitem label = "Creer une playlist" name="add_playlist"/>
 						<menuitem label ="Importer une playlist"/>
-					</menuitem>
-					<menuitem label="test">
-				    	<menuitem label="Add genre" name="genre"/>
-						<menuitem label="Add Music" name="music"/>
 					</menuitem>
 				</fx:XMLList>
 			</mx:MenuBar>
@@ -408,7 +483,9 @@
 			<s:VGroup id="InfoPlaylistGroup" width="20%" height="100%">
 				<mx:DataGrid id="PlaylistTab" width="100%" height="100%" color="#FFFFFF"
 							dataProvider="{Application.Instance.display.playCollection}"
-							itemClick="PlaylistTab_itemClickHandler(event)">
+							itemClick="PlaylistTab_itemClickHandler(event)"
+							doubleClickEnabled="true"
+							itemDoubleClick="PlaylistTab_itemDoubleClickHandler(event)">
 					<mx:columns>
 						
 							<mx:DataGridColumn dataField="PlaylistField" headerText="Playlist"/>
