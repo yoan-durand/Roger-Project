@@ -9,6 +9,7 @@ package BO
 	import mx.rpc.events.FaultEvent;
 	import mx.rpc.events.ResultEvent;
 	import mx.rpc.http.HTTPService;
+	import spark.components.Image;
 	
 	public class Music
 	{
@@ -21,6 +22,7 @@ package BO
 		private var _Title:String;
 		private var _Genre:String;
 		private var _Path_Cover:String;
+		private var _image:Image = null;
 		
 		public function Music()
 		{
@@ -78,6 +80,8 @@ package BO
 					//this.Path_Cover = obj.response.songs.source[0].tracks != null ? obj.response.songs.source[0].tracks[0].release_image : "";
 					var update_music:String = "UPDATE Music SET Path_Cover = '"+Tool.str_replace("'", "''", this.Path_Cover)+"', ID_Echonest = '"+this.ID_Echonest+"' WHERE ID_Music = "+this.ID_Music;
 					Database.exec_query(null, update_music);
+					Application.Instance.list_music.push(this);
+					Application.Instance.display.fill_tab(Application.Instance.list_music);
 				}
 				catch (e:String)
 				{
@@ -138,6 +142,10 @@ package BO
 		public function set Path_Cover(value:String):void
 		{
 			_Path_Cover = value;
+			if (_image != null)
+			{
+				_image.source = _Path_Cover;
+			}
 		}
 
 		public function get Album():String
