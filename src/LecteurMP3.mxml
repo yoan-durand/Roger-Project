@@ -150,19 +150,19 @@
 					
 					var button:Button = new Button();
 
-					var g:VGroup = new VGroup ();
-
+					
 					_input = new spark.components.TextInput();
 					button.label = "ok";
 					label.text = "Ajouter un nom de playlist";
 					window = TitleWindow(PopUpManager.createPopUp(this, TitleWindow));
 					window.width = 200;
 					window.height = 100;
-					g.addElement(label);
 					
-					g.addElement(_input);
-					g.addElement(button);
-					window.addChild(g);
+					window.addChild(label);
+					
+					window.addChild(_input);
+					window.addChild(button);
+					
 					button.addEventListener(MouseEvent.CLICK, clickButton);
 					PopUpManager.centerPopUp(_window);
 				
@@ -172,8 +172,12 @@
 			protected function clickButton (event:MouseEvent) : void
 			{
 				var name:String = _input.text;
-				var insert_play:String = "INSERT INTO Playlist (Name) VALUES ('"+name+"')";
-				var sql_res:SQLResult = Database.exec_query(null,  insert_play);	
+				if (name != "" && name != null)
+				{
+					var insert_play:String = "INSERT INTO Playlist (Name) VALUES ('"+name+"')";
+					var sql_res:SQLResult = Database.exec_query(null,  insert_play);	
+				
+				
 				
 				if (sql_res != null)
 				{
@@ -182,6 +186,7 @@
 					playlist.Name = name;
 					playlist.Musics = new Array;
 					Application.Instance.list_playlist.push(playlist);
+				}
 				}
 				Application.Instance.display.playCollection.removeAll();
 				Application.Instance.display.fill_playlist(DB.Database.get_playlists());
@@ -316,8 +321,6 @@
 			{
 				
 				Application.Instance.display.musicCollection.removeAll();
-				Application.Instance._player.music_list = null;
-				Application.Instance._player.music_list = new Array();
 				
 				for each (var play:* in Application.Instance.list_playlist)
 				{
