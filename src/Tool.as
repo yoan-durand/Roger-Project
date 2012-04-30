@@ -49,5 +49,18 @@ package
 		{
 			return Genres[genre] != null ? Genres[genre] : genre;
 		}
+		
+		public static function randomizeArray(array:Array):Array
+		{
+			var l:Number = array.length - 1;
+			for (var it:Number = 0; it < l; it++)
+			{
+				var r:Number = Math.round(Math.random()*l)
+				var tmp:Object = array[it];
+				array[it] = array[r];
+				array[r] = tmp;
+			}
+			return array;
+		}
 	}
 }
