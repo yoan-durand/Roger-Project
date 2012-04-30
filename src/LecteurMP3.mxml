@@ -74,16 +74,7 @@
 			}
 
 
-			public function get newplaylist():String
-			{
-				return _newplaylist;
-			}
-
-			public function set newplaylist(value:String):void
-			{
-				_newplaylist = value;
-			}
-
+			
 			public function get clicked():Object
 			{
 				return _clicked;
@@ -151,21 +142,17 @@
 			}
 			
 			private var _window:TitleWindow;
-			private var _newplaylist:String;
+		    private var _input: spark.components.TextInput;
 			
 			public function add_playlist () : void
 			{
 					var label:Label = new Label ();
-					var input:spark.components.TextInput = new spark.components.TextInput();
+					
 					var button:Button = new Button();
 
 					var g:VGroup = new VGroup ();
-				
 
-					
-					input.id = "src";
-					newplaylist = input.text;
-
+					_input = new spark.components.TextInput();
 					button.label = "ok";
 					label.text = "Ajouter un nom de playlist";
 					window = TitleWindow(PopUpManager.createPopUp(this, TitleWindow));
@@ -173,26 +160,21 @@
 					window.height = 100;
 					g.addElement(label);
 					
-					g.addElement(input);
+					g.addElement(_input);
 					g.addElement(button);
 					window.addChild(g);
 					button.addEventListener(MouseEvent.CLICK, clickButton);
 					PopUpManager.centerPopUp(_window);
 				
-			
 			}
 			
 			
 			protected function clickButton (event:MouseEvent) : void
 			{
-				var name:String = "";
+				var name:String = _input.text;
 				var insert_play:String = "INSERT INTO Playlist (Name) VALUES ('"+name+"')";
-				var sql_res:SQLResult = Database.exec_query(null,  insert_play);
+				var sql_res:SQLResult = Database.exec_query(null,  insert_play);	
 				
-				if (newplaylist != null)
-				{
-					name = newplaylist;
-				}
 				if (sql_res != null)
 				{
 					var playlist:Object = new Object;
@@ -201,7 +183,8 @@
 					playlist.Musics = new Array;
 					Application.Instance.list_playlist.push(playlist);
 				}
-				
+				Application.Instance.display.playCollection.removeAll();
+				Application.Instance.display.fill_playlist(DB.Database.get_playlists());
 				PopUpManager.removePopUp(_window);
 			}
 			
@@ -373,13 +356,9 @@
 				var id_music : int = clicked.ID;
 				var id_Playlist : int = e.item.id;
 				
-
-				if (clicked != null)
-				{
 					if ("Ajouter a la liste de lecture" == e.label)
 					{
-						var music : Music = new Music;
-						
+						var music : Music = new Music;		
 						music.Album = clicked.AlbumField;
 						music.Artist = clicked.ArtistField;
 						music.Genre = clicked.GenreField;
@@ -403,7 +382,7 @@
 						Menu1.removeEventListener(FlexNativeMenuEvent.ITEM_CLICK, actionClicMenu);
 					}
 					
-				}
+
 				
 			}
 			
