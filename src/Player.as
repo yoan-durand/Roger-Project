@@ -3,6 +3,7 @@ package
 	import BO.Music;
 	
 	import flash.events.Event;
+	import flash.events.MouseEvent;
 	import flash.events.ProgressEvent;
 	import flash.events.TimerEvent;
 	import flash.media.Sound;
@@ -10,17 +11,19 @@ package
 	import flash.media.SoundLoaderContext;
 	import flash.media.SoundTransform;
 	import flash.net.URLRequest;
+	import flash.text.TextFormatAlign;
 	import flash.utils.Timer;
 	
+	import flashx.textLayout.formats.BackgroundColor;
 	import flashx.textLayout.formats.Float;
 	
-	import spark.components.Image;
 	import mx.controls.Label;
 	import mx.core.FlexGlobals;
 	
 	import spark.components.BorderContainer;
+	import spark.components.Image;
 	import spark.components.VGroup;
-	import flash.text.TextFormatAlign;
+
 
 	public class Player
 	{
@@ -96,15 +99,10 @@ package
 		}
 		private function completeHandler (event:Event):void
 		{
-			_channel.stop();
-			_channel = null;
-			//_channel.removeEventListener(Event.SOUND_COMPLETE, _channel);  
-			_music_sound = null;
-			positionTimer.stop();
-			FlexGlobals.topLevelApplication.progressBar.value = 0;
+			stop ();
 			update_index (1);
 			play ();
-			trace("Music end");
+
 		}
 		
 		public function change_position (position:Number):void
@@ -143,6 +141,9 @@ package
 					positionTimer = new Timer(500);
 					positionTimer.addEventListener(TimerEvent.TIMER, positionTimerHandler);
 					positionTimer.start();
+					var actual_container:BorderContainer = FlexGlobals.topLevelApplication.current_playlist.getChildAt(_index);
+					actual_container.setStyle("backgroundColor", "#F98D00");
+					actual_container.setStyle("fontWeight", "bold");
 				}
 				else
 				{
@@ -162,6 +163,9 @@ package
 				_music_sound = null;
 				positionTimer.stop();
 				FlexGlobals.topLevelApplication.progressBar.value = 0;
+				var old_container:BorderContainer = FlexGlobals.topLevelApplication.current_playlist.getChildAt(_index);
+				old_container.setStyle("backgroundColor", "#333333");
+				old_container.setStyle("fontWeight", "normal");
 			}
 		}
 		
@@ -169,9 +173,10 @@ package
 		{
 			if (_channel != null && _channel.position < 3000)
 			{
-			  update_index (-1);
+				stop();	
+			  	update_index (-1);
 			}
-			stop();
+
 			play();
 		}
 		
@@ -179,9 +184,10 @@ package
 		{
 			if (_channel != null)
 			{
+				stop();
 				update_index (1);
 			}
-			stop();
+
 			play();
 		}
 		
@@ -204,6 +210,10 @@ package
 				{
 					_index = index_updated;
 				}
+				else
+				{
+					_index = 0;
+				}
 			}
 		}
 		
@@ -214,17 +224,52 @@ package
 			_music_list.push(music);
 		}
 		
+		public function insert_and_play_music (music:Music):void
+		{
+			if (_music_list.length == 0)
+			{
+				add_music (music);
+				play ();
+			}
+			else
+			{
+				display_add_music (music, _index + 1);
+				_music_list.splice(_index + 1, 0, music);
+				stop();
+				_index++;
+				play ();
+				
+			}
+		}
+		
+		private function select_music (event:MouseEvent):void
+		{
+			var container:BorderContainer = event.currentTarget as BorderContainer;
+			var position:int = FlexGlobals.topLevelApplication.current_playlist.getElementIndex(container);
+			stop ();
+			_index = position;
+			play ();
+			
+		}
+		
 		/* DISPLAY */
-		private function display_add_music (music:Music):void
+		private function display_add_music (music:Music, position:int = 0):void
 		{
 			var container:BorderContainer = new BorderContainer();
 			container.width = 144;
 			container.height = 120;
+			container.setStyle("backgroundColor", "#333333");
+			container.setStyle("color","white");
+			container.setStyle("borderColor", "black");
+			container.setStyle("borderWeight" , 2);
+			container.setStyle("cornerRadius", 5);
+			container.addEventListener(MouseEvent.CLICK, select_music);
 			
 			var group:VGroup = new VGroup();
 			group.percentHeight = 100;
 			group.percentWidth = 100;
 			group.gap = 0;
+			
 			
 			var image:Image = new Image ();
 			image.percentHeight = 70;
@@ -245,14 +290,20 @@ package
 			var label_artist:Label = new Label ();
 			label_artist.text = music.Artist;
 			label_artist.percentWidth = 100;
-			label_title.width = 140;
-			label_title.height = 18;
+			label_artist.width = 140;
+			label_artist.height = 18;
 			label_artist.setStyle("textAlign", TextFormatAlign.CENTER);
 			group.addElement (label_artist);
 			
 			container.addElement(group);
-			
-			FlexGlobals.topLevelApplication.current_playlist.addElement(container);
+			if (position == 0)
+			{
+				FlexGlobals.topLevelApplication.current_playlist.addElement(container);
+			}
+			else
+			{
+				FlexGlobals.topLevelApplication.current_playlist.addElementAt(container, position);
+			}
 		}
 	}
 }

@@ -87,7 +87,7 @@ package BO
 		
 		public function faultHandler(event:FaultEvent):void
 		{
-			event;
+			
 		}
 		
 		public function get Genre():String
