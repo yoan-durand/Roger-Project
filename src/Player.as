@@ -35,6 +35,7 @@ package
 		private var _channel:SoundChannel;
 		private var _volume_info:SoundTransform; //infos Volume et Pan
 		private var positionTimer:Timer;
+		public var _shuffle:Boolean = false;
 		
 		public function Player ()
 		{
@@ -173,12 +174,16 @@ package
 		
 		public function rewind ():void
 		{
+			
 			if (_channel != null && _channel.position < 3000)
 			{
 				stop();	
 			  	update_index (-1);
 			}
-
+			else
+			{
+				stop();
+			}
 			play();
 		}
 		
@@ -206,15 +211,27 @@ package
 		private function update_index (inc:int):void
 		{
 			var index_updated:int = _index + inc;
-			if (index_updated >= 0)
+			if (_shuffle)
 			{
-				if (index_updated < _music_list.length)
+				var r:Number = _index;
+				while (r == _index)
 				{
-					_index = index_updated;
+					r = Math.round(Math.random() * (_music_list.length -1));
 				}
-				else
+				_index = r;
+			}
+			else
+			{
+				if (index_updated >= 0)
 				{
-					_index = 0;
+					if (index_updated < _music_list.length)
+					{
+						_index = index_updated;
+					}
+					else
+					{
+						_index = 0;
+					}
 				}
 			}
 		}
@@ -317,7 +334,7 @@ package
 			var image:Image = new Image ();
 			image.percentHeight = 70;
 			image.percentWidth = 100;
-			var path_cover:String = music.Path_Cover != "" ? music.Path_Cover : "assets/noimageavailable.jpg";
+			var path_cover:String = (music.Path_Cover != null && music.Path_Cover != "")  ? music.Path_Cover : "assets/noimageavailable.jpg";
 			image.source = path_cover;
 			image.scaleMode = "stretch";
 			group.addElement(image);

@@ -236,7 +236,8 @@
 			
 			protected function ShuffleButton_clickHandler(event:MouseEvent):void
 			{
-				// TODO Auto-generated method stub
+				var appli:Application = Application.Instance;
+				appli._player._shuffle = !appli._player._shuffle;
 				
 			}
 			
