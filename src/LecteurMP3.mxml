@@ -383,7 +383,7 @@
 						music.Title = clicked.TitleField;
 						
 						Application.Instance._player.add_music(music);
-						
+						MusicTable.removeEventListener(MouseEvent.RIGHT_CLICK, MusicTable_rightClickHandler);
 					}
 					else
 					{
@@ -394,6 +394,7 @@
 						Application.Instance.display.fill_playlist(DB.Database.get_playlists());
 						Menu1.unsetContextMenu(MusicTable);
 						Menu1.removeEventListener(FlexNativeMenuEvent.ITEM_CLICK, actionClicMenu);
+						MusicTable.removeEventListener(MouseEvent.RIGHT_CLICK, MusicTable_rightClickHandler);
 					}
 					
 
@@ -529,7 +530,8 @@
 					<mx:DataGrid id="MusicTable" width="99%" height="65%" borderVisible="false"
 								 color="#FFFFFF" contentBackgroundColor="#D1C6C6"
 								 dataProvider="{Application.Instance.display.musicCollection}" editable="false" selectionColor="#605B5B"
-								 doubleClickEnabled="true" itemDoubleClick="refererRowDoubleClicked(event)"
+								 doubleClickEnabled="true" 
+								 itemDoubleClick="refererRowDoubleClicked(event)"
 								 click="MusicTable_clickHandler(event)">
 						<mx:columns>
 								<mx:DataGridColumn dataField="TitleField" headerText="Titre"/>
